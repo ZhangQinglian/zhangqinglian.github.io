@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zqlxtt.cn","root":"/","images":"/images","scheme":"Gemini","version":"8.2.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="一、前言从 2015 年接触 Flutter 到现在也有两年多时间，在这期间我并没有正真地去了解这个神奇的框架，只是时不时拉取 master 的最新代码，编一下 flutter_gallery 看看有什么新特性。但随着此次 GDD 的召开，Flutter 被 Google 带到了国内开发者的眼前，相信谷歌是已经准备好让 Flutter 走上移动开发历史的舞台了。 一款好的移动应用该具备什么品质？戳">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flutter 中的国际化">
+<meta property="og:url" content="https://zqlxtt.cn/2018/03/06/flutter-localizations/index.html">
+<meta property="og:site_name" content="DAYS">
+<meta property="og:description" content="一、前言从 2015 年接触 Flutter 到现在也有两年多时间，在这期间我并没有正真地去了解这个神奇的框架，只是时不时拉取 master 的最新代码，编一下 flutter_gallery 看看有什么新特性。但随着此次 GDD 的召开，Flutter 被 Google 带到了国内开发者的眼前，相信谷歌是已经准备好让 Flutter 走上移动开发历史的舞台了。 一款好的移动应用该具备什么品质？戳">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://cdn.zqlxtt.cn/device-2017-12-21-214051.png">
+<meta property="og:image" content="http://backup.flutter-dev.cn/device-2017-12-21-215330.png">
+<meta property="og:image" content="http://backup.flutter-dev.cn/device-2017-12-21-231417.png">
+<meta property="og:image" content="http://backup.flutter-dev.cn/device-2017-12-22-001905.png">
+<meta property="og:image" content="http://backup.flutter-dev.cn/device-2017-12-22-002133.png">
+<meta property="og:image" content="http://backup.flutter-dev.cn/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-22%20%E4%B8%8A%E5%8D%8810.45.47.png">
+<meta property="og:image" content="http://backup.flutter-dev.cn/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-22%20%E4%B8%8A%E5%8D%8810.55.52.png">
+<meta property="og:image" content="http://backup.flutter-dev.cn/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-22%20%E4%B8%8B%E5%8D%882.29.45.png">
+<meta property="og:image" content="http://backup.flutter-dev.cn/localizatiion_free.gif">
+<meta property="og:image" content="http://backup.flutter-dev.cn/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-22%20%E4%B8%8B%E5%8D%883.34.41.png">
+<meta property="article:published_time" content="2018-03-06T04:06:08.000Z">
+<meta property="article:modified_time" content="2021-07-06T15:49:43.849Z">
+<meta property="article:author" content="番茄沙司">
+<meta property="article:tag" content="flutter">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://cdn.zqlxtt.cn/device-2017-12-21-214051.png">
+
+
+<link rel="canonical" href="https://zqlxtt.cn/2018/03/06/flutter-localizations/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>Flutter 中的国际化 | DAYS</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">DAYS</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">你的气质里，藏着你走过的路，读过的书和爱过的人</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-首页"><a href="/" rel="section"><i class="fas fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-时间轴"><a href="/archives/" rel="section"><i class="fas fa-archive fa-fw"></i>时间轴</a></li>
+        <li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fas fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-书签"><a href="/bookmark/" rel="section"><i class="fas fa-bookmark fa-fw"></i>书签</a></li>
+        <li class="menu-item menu-item-书籍"><a href="/books/" rel="section"><i class="fas fa-book fa-fw"></i>书籍</a></li>
+        <li class="menu-item menu-item-音乐"><a href="/music/" rel="section"><i class="fas fa-music fa-fw"></i>音乐</a></li>
+        <li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fas fa-heart fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-公益404"><a href="/404/" rel="section"><i class="fas fa-heartbeat fa-fw"></i>公益404</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">一、前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%9C%A8-MaterialApp-%E4%B8%AD%E6%B7%BB%E5%8A%A0%E5%9B%BD%E9%99%85%E5%8C%96%E6%94%AF%E6%8C%81"><span class="nav-number">2.</span> <span class="nav-text">二、在 MaterialApp 中添加国际化支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%9B%BD%E9%99%85%E5%8C%96%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E8%BF%87%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">三、国际化的初始化过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E7%AE%80%E5%8D%95%E7%9A%84-App-%E5%86%85%E8%AF%AD%E8%A8%80%E5%88%87%E6%8D%A2"><span class="nav-number">4.</span> <span class="nav-text">四、简单的 App 内语言切换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">五、总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="番茄沙司"
+      src="/img/avatar.jpg">
+  <p class="site-author-name" itemprop="name">番茄沙司</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ZhangQinglian" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ZhangQinglian" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:qinglian.zhang@outlook.com" title="E-Mail → mailto:qinglian.zhang@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i></a>
+      </span>
+  </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zqlxtt.cn/2018/03/06/flutter-localizations/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="番茄沙司">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DAYS">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Flutter 中的国际化
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-03-06 12:06:08" itemprop="dateCreated datePublished" datetime="2018-03-06T12:06:08+08:00">2018-03-06</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-07-06 23:49:43" itemprop="dateModified" datetime="2021-07-06T23:49:43+08:00">2021-07-06</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h2><p>从 2015 年接触 Flutter 到现在也有两年多时间，在这期间我并没有正真地去了解这个神奇的框架，只是时不时拉取 master 的最新代码，编一下 flutter_gallery 看看有什么新特性。但随着此次 GDD 的召开，Flutter 被 Google 带到了国内开发者的眼前，相信谷歌是已经准备好让 Flutter 走上移动开发历史的舞台了。</p>
+<p>一款好的移动应用该具备什么品质？戳中用户痛点的功能，炫酷的 UI 还是流畅的操作体验？这些都很重要，少了其中任何一点都是得不到用户青睐的。但今天我要说的虽然不是前面这三个中的哪一个，但也是少了它就不行的“应用国际化”。</p>
+<p>对于开发者来说，在 Android 和 iOS 开发中使用国际化已经是老掉牙的套路了，那么在 Flutter 中该如何使用国际化呢？是否也想 Android 一样只要多配置一个 xml 就能搞定了呢？</p>
+<a id="more"></a>
+<h2 id="二、在-MaterialApp-中添加国际化支持"><a href="#二、在-MaterialApp-中添加国际化支持" class="headerlink" title="二、在 MaterialApp 中添加国际化支持"></a>二、在 MaterialApp 中添加国际化支持</h2><p>Flutter 官方鼓励我们在写 Flutter 应用的时候直接从 MaterialApp 开始，原因是 MaterialApp 为我们集成好了很多 Material Design 所必须的控件，如AnimatedThemen、GridPager 等，另外还通过 MaterialApp 配置了全局路由，方便进行页面的切换。既然如此我们就先从 MaterialApp 开始实现国际化。国际化涵盖的不单单只是多国语言，还有文字阅读方向、时间和日期格式等，但本文仅介绍多国语言的适配，它们几种还希望读者自行学习和研究。</p>
+<p>通常我们新建的 Flutter 应用是默认不支持多语言的，即使用户在中文环境下，显示的文字仍然是英文，比如下图所示的日期选择对话框：</p>
+<p><img src="http://cdn.zqlxtt.cn/device-2017-12-21-214051.png" alt=""></p>
+<p>那么怎么样将系统的这些组件国际化呢？首先需要在 pubspec.yaml 中添加如下依赖：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">flutter_localizations:</span></span><br><span class="line">  <span class="attr">sdk:</span> <span class="string">flutter</span></span><br></pre></td></tr></table></figure>
+<p>接着运行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flutter packages get</span><br></pre></td></tr></table></figure>
+<p> 以获取依赖库。</p>
+<p>当上面两部完成后在 main.dart 中 import 如下：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:flutter_localizations/flutter_localizations.dart&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+
+<p>然后在 MaterialApp 的构造方法中给 <code>localizationsDelegates</code> 和 <code>supportedLocales</code> 两个可选参数赋值：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyApp</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> MaterialApp(</span><br><span class="line">      title: <span class="string">&#x27;Flutter Demo&#x27;</span>,</span><br><span class="line">      theme: <span class="keyword">new</span> ThemeData(</span><br><span class="line">        primarySwatch: Colors.blue,</span><br><span class="line">      ),</span><br><span class="line">      home: <span class="keyword">new</span> MyHomePage(title: <span class="string">&#x27;Flutter Demo Home Page&#x27;</span>),</span><br><span class="line">      localizationsDelegates: [                             <span class="comment">//此处</span></span><br><span class="line">        GlobalMaterialLocalizations.delegate,</span><br><span class="line">        GlobalWidgetsLocalizations.delegate,</span><br><span class="line">      ],</span><br><span class="line">      supportedLocales: [                                   <span class="comment">//此处</span></span><br><span class="line">        <span class="keyword">const</span> Locale(<span class="string">&#x27;zh&#x27;</span>,<span class="string">&#x27;CH&#x27;</span>),</span><br><span class="line">        <span class="keyword">const</span> Locale(<span class="string">&#x27;en&#x27;</span>,<span class="string">&#x27;US&#x27;</span>),</span><br><span class="line">      ],</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>暂时先不用理解这两个参数是什么意思，此时如果重新运行的话结果如下图：</p>
+<p><img src="http://backup.flutter-dev.cn/device-2017-12-21-215330.png" alt=""></p>
+<p>细心的小伙伴可能发现这个 Dialog 中的文字是变成中文了，但背景中的 titlebar 的文字还是英文，难道老司机也翻车了？</p>
+<p>其实 titlebar 中的这串文字是属于我们创建的应用的，如下：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">home: <span class="keyword">new</span> MyHomePage(title: <span class="string">&#x27;Flutter Demo Home Page&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>Flutter 框架是不知道翻译这句话。</p>
+<p>接下来要做的就是我们自己实现一个类似 <code>GlobalMaterialLocalizations</code>的东西，用它来实现多语言。</p>
+<p>首先需要准备在应用中用到的字符串，一个刚新建的 Flutter 应用用到了四个字符串，如下</p>
+<ul>
+<li>Flutter Demo</li>
+<li>Flutter Demo Home Page</li>
+<li>You have pushed the button this many times:</li>
+<li>Increment</li>
+</ul>
+<p>这里为了简单我们只增加中文，依次对应为：</p>
+<ul>
+<li>Flutter 示例</li>
+<li>Flutter 示例主页面</li>
+<li>你一共点击了这么多次按钮：</li>
+<li>增加</li>
+</ul>
+<p>两种文字准备后就可以着手写 Localizations 了，此处的 Localizations 是多国语言资源的汇总。在这里我自定义一个名为 DemoLocalizations 的类,然后将多国资源整合进此类：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DemoLocalizations</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">final</span> Locale locale;</span><br><span class="line"></span><br><span class="line">  DemoLocalizations(<span class="keyword">this</span>.locale);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">static</span> <span class="built_in">Map</span>&lt;<span class="built_in">String</span>, <span class="built_in">Map</span>&lt;<span class="built_in">String</span>, <span class="built_in">String</span>&gt;&gt; _localizedValues = &#123;</span><br><span class="line">    <span class="string">&#x27;en&#x27;</span>: &#123;</span><br><span class="line">      <span class="string">&#x27;task title&#x27;</span>: <span class="string">&#x27;Flutter Demo&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;titlebar title&#x27;</span>: <span class="string">&#x27;Flutter Demo Home Page&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;click tip&#x27;</span>: <span class="string">&#x27;You have pushed the button this many times:&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;inc&#x27;</span>:<span class="string">&#x27;Increment&#x27;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&#x27;zh&#x27;</span>: &#123;</span><br><span class="line">      <span class="string">&#x27;task title&#x27;</span>: <span class="string">&#x27;Flutter 示例&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;titlebar title&#x27;</span>: <span class="string">&#x27;Flutter 示例主页面&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;click tip&#x27;</span>: <span class="string">&#x27;你一共点击了这么多次按钮：&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;inc&#x27;</span>:<span class="string">&#x27;增加&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">get</span> taskTitle&#123;</span><br><span class="line">    <span class="keyword">return</span> _localizedValues[locale.languageCode][<span class="string">&#x27;task title&#x27;</span>];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">get</span> titleBarTitle&#123;</span><br><span class="line">    <span class="keyword">return</span> _localizedValues[locale.languageCode][<span class="string">&#x27;titlebar title&#x27;</span>];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">get</span> clickTop&#123;</span><br><span class="line">    <span class="keyword">return</span> _localizedValues[locale.languageCode][<span class="string">&#x27;click tip&#x27;</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">get</span> inc&#123;</span><br><span class="line">    <span class="keyword">return</span> _localizedValues[locale.languageCode][<span class="string">&#x27;inc&#x27;</span>];</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此时只要能拿到 DemoLocalizations 的对象实例，就可以调用它的<code>taskTitle</code>、<code>titleBarTitle</code>、<code>clickTop</code>这三个方法来获取对应的字符串。</p>
+<p>定义完 DemoLocalizations 以后，我们就需要想这么一个问题，这个类是谁负责初始化呢？答案自然不是我们自己主动去初始化，而是需要一个叫做 <code>LocalizationsDelegate</code>的类来完成，LocalizationsDelegate 是一个抽象类，需要我们去实现它：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DemoLocalizationsDelegate</span> <span class="keyword">extends</span> <span class="title">LocalizationsDelegate</span>&lt;<span class="title">DemoLocalizations</span>&gt;</span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> DemoLocalizationsDelegate();</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="built_in">bool</span> isSupported(Locale locale) &#123;</span><br><span class="line">    <span class="keyword">return</span> [<span class="string">&#x27;en&#x27;</span>,<span class="string">&#x27;zh&#x27;</span>].contains(locale.languageCode);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Future&lt;DemoLocalizations&gt; load(Locale locale) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> SynchronousFuture&lt;DemoLocalizations&gt;(<span class="keyword">new</span> DemoLocalizations(locale));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="built_in">bool</span> shouldReload(LocalizationsDelegate&lt;DemoLocalizations&gt; old) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">static</span> DemoLocalizationsDelegate delegate = <span class="keyword">const</span> DemoLocalizationsDelegate();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意 <code>load</code> 方法，DemoLocalizations就是在此方法内被初始化的。</p>
+<p>接着将 DemoLocalizationsDelegate 添加进 MaterialApp：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyApp</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> MaterialApp(</span><br><span class="line">      title: <span class="string">&#x27;Flutter Demo&#x27;</span>,</span><br><span class="line">      theme: <span class="keyword">new</span> ThemeData(</span><br><span class="line">        primarySwatch: Colors.blue,</span><br><span class="line">      ),</span><br><span class="line">      home: <span class="keyword">new</span> MyHomePage(title: <span class="string">&#x27;Flutter Demo Home Page&#x27;</span>),</span><br><span class="line">      localizationsDelegates: [</span><br><span class="line">        GlobalMaterialLocalizations.delegate,</span><br><span class="line">        GlobalWidgetsLocalizations.delegate,</span><br><span class="line">        DemoLocalizationsDelegate.delegate,                 <span class="comment">//添加在此处</span></span><br><span class="line">      ],</span><br><span class="line">      supportedLocales: [</span><br><span class="line">        <span class="keyword">const</span> Locale(<span class="string">&#x27;zh&#x27;</span>, <span class="string">&#x27;CH&#x27;</span>),</span><br><span class="line">        <span class="keyword">const</span> Locale(<span class="string">&#x27;en&#x27;</span>, <span class="string">&#x27;US&#x27;</span>),</span><br><span class="line">      ],</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>DemoLocalizationsDelegate 已经被添加进 MaterialApp，那我们该如何使用 DemoLocalizations 呢？这里就要介绍另一个 Weidget 的子类 <code>Localizations</code>，注意此处的 Localizations 它是一个货真价实 Widget。DemoLocalizationsDelegate 这个类的对象虽然被传入了 MaterialApp，但由于 MaterialApp 会在内部嵌套 Localizations 这个 Widget，而 LocalizationsDelegate 正是其构造方法必须的参数：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Localizations(&#123;</span><br><span class="line">  Key key,</span><br><span class="line">  <span class="meta">@required</span> <span class="keyword">this</span>.locale,</span><br><span class="line">  <span class="meta">@required</span> <span class="keyword">this</span>.delegates,                              <span class="comment">//此处</span></span><br><span class="line">  <span class="keyword">this</span>.child,</span><br><span class="line">&#125;) : <span class="keyword">assert</span>(locale != <span class="keyword">null</span>),</span><br><span class="line">     <span class="keyword">assert</span>(delegates != <span class="keyword">null</span>),</span><br><span class="line">     <span class="keyword">assert</span>(delegates.any(</span><br><span class="line">             (LocalizationsDelegate&lt;<span class="built_in">dynamic</span>&gt; delegate)</span><br><span class="line">               =&gt; delegate <span class="keyword">is</span> LocalizationsDelegate&lt;WidgetsLocalizations&gt;)</span><br><span class="line">           ),</span><br><span class="line">     <span class="keyword">super</span>(key: key);</span><br></pre></td></tr></table></figure>
+<p>而 DemoLocalizations 的实例也是在 Localizations 中通过 DemoLocalizationsDelegate 实例化的。所以在应用中要使用 DemoLocalizations 的实例自然是需要通过 Localizations 这个 Widget 来获取的，代码如下：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Localizations.of(context, DemoLocalizations);</span><br></pre></td></tr></table></figure>
+<p><code>of</code>这个静态方法就会返回 DemoLocalizations 的实例，现在先别管其内部是如何实现的。我们将这行代码放入 DemoLocalizations 中以方便使用：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DemoLocalizations</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">final</span> Locale locale;</span><br><span class="line"></span><br><span class="line">  DemoLocalizations(<span class="keyword">this</span>.locale);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">static</span> <span class="built_in">Map</span>&lt;<span class="built_in">String</span>, <span class="built_in">Map</span>&lt;<span class="built_in">String</span>, <span class="built_in">String</span>&gt;&gt; _localizedValues = &#123;</span><br><span class="line">    <span class="string">&#x27;en&#x27;</span>: &#123;</span><br><span class="line">      <span class="string">&#x27;task title&#x27;</span>: <span class="string">&#x27;Flutter Demo&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;titlebar title&#x27;</span>: <span class="string">&#x27;Flutter Demo Home Page&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;click tip&#x27;</span>: <span class="string">&#x27;You have pushed the button this many times:&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;inc&#x27;</span>:<span class="string">&#x27;Increment&#x27;</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="string">&#x27;zh&#x27;</span>: &#123;</span><br><span class="line">      <span class="string">&#x27;task title&#x27;</span>: <span class="string">&#x27;Flutter 示例&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;titlebar title&#x27;</span>: <span class="string">&#x27;Flutter 示例主页面&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;click tip&#x27;</span>: <span class="string">&#x27;你一共点击了这么多次按钮：&#x27;</span>,</span><br><span class="line">      <span class="string">&#x27;inc&#x27;</span>:<span class="string">&#x27;增加&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">get</span> taskTitle&#123;</span><br><span class="line">    <span class="keyword">return</span> _localizedValues[locale.languageCode][<span class="string">&#x27;task title&#x27;</span>];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">get</span> titleBarTitle&#123;</span><br><span class="line">    <span class="keyword">return</span> _localizedValues[locale.languageCode][<span class="string">&#x27;titlebar title&#x27;</span>];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">get</span> clickTop&#123;</span><br><span class="line">    <span class="keyword">return</span> _localizedValues[locale.languageCode][<span class="string">&#x27;click tip&#x27;</span>];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">get</span> inc&#123;</span><br><span class="line">    <span class="keyword">return</span> _localizedValues[locale.languageCode][<span class="string">&#x27;inc&#x27;</span>];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//此处</span></span><br><span class="line">  <span class="keyword">static</span> DemoLocalizations of(BuildContext context)&#123;</span><br><span class="line">    <span class="keyword">return</span> Localizations.of(context, DemoLocalizations);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来就是真正使用 DemoLocalizations 的时候了，在代码中将原来的字符串替换如下：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">&#x27;dart:async&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:flutter/material.dart&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:flutter_localizations/flutter_localizations.dart&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">&#x27;package:flutter/foundation.dart&#x27;</span> <span class="keyword">show</span> SynchronousFuture;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  runApp(<span class="keyword">new</span> MyApp());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyApp</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> MaterialApp(</span><br><span class="line">      title: DemoLocalizations.of(context).taskTitle,                           <span class="comment">// 此处1</span></span><br><span class="line">      theme: <span class="keyword">new</span> ThemeData(</span><br><span class="line">        primarySwatch: Colors.blue,</span><br><span class="line">      ),</span><br><span class="line">      home: <span class="keyword">new</span> MyHomePage(title: DemoLocalizations.of(context).titleBarTitle), <span class="comment">// 此处2</span></span><br><span class="line">      localizationsDelegates: [</span><br><span class="line">        GlobalMaterialLocalizations.delegate,</span><br><span class="line">        GlobalWidgetsLocalizations.delegate,</span><br><span class="line">        DemoLocalizationsDelegate.delegate,</span><br><span class="line">      ],</span><br><span class="line">      supportedLocales: [</span><br><span class="line">        <span class="keyword">const</span> Locale(<span class="string">&#x27;zh&#x27;</span>, <span class="string">&#x27;CH&#x27;</span>),</span><br><span class="line">        <span class="keyword">const</span> Locale(<span class="string">&#x27;en&#x27;</span>, <span class="string">&#x27;US&#x27;</span>),</span><br><span class="line">      ],</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyHomePage</span> <span class="keyword">extends</span> <span class="title">StatefulWidget</span> </span>&#123;</span><br><span class="line">  MyHomePage(&#123;Key key, <span class="keyword">this</span>.title&#125;) : <span class="keyword">super</span>(key: key);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">String</span> title;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  _MyHomePageState createState() =&gt; <span class="keyword">new</span> _MyHomePageState();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_MyHomePageState</span> <span class="keyword">extends</span> <span class="title">State</span>&lt;<span class="title">MyHomePage</span>&gt; </span>&#123;</span><br><span class="line">  <span class="built_in">int</span> _counter = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> _incrementCounter() &#123;</span><br><span class="line">    showDatePicker(context: context,</span><br><span class="line">        initialDate: <span class="keyword">new</span> <span class="built_in">DateTime</span>.now(),</span><br><span class="line">        firstDate: <span class="keyword">new</span> <span class="built_in">DateTime</span>.now().subtract(<span class="keyword">new</span> <span class="built_in">Duration</span>(days: <span class="number">30</span>)),</span><br><span class="line">        lastDate: <span class="keyword">new</span> <span class="built_in">DateTime</span>.now().add(<span class="keyword">new</span> <span class="built_in">Duration</span>(days: <span class="number">30</span>))).then((v) &#123;&#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Scaffold(</span><br><span class="line">      appBar: <span class="keyword">new</span> AppBar(</span><br><span class="line">        title: <span class="keyword">new</span> Text(widget.title),</span><br><span class="line">      ),</span><br><span class="line">      body: <span class="keyword">new</span> Center(</span><br><span class="line">        child: <span class="keyword">new</span> Column(</span><br><span class="line">          mainAxisAlignment: MainAxisAlignment.center,</span><br><span class="line">          children: &lt;Widget&gt;[</span><br><span class="line">            <span class="keyword">new</span> Text(</span><br><span class="line">              DemoLocalizations.of(context).clickTop,                          <span class="comment">// 此处3</span></span><br><span class="line">            ),</span><br><span class="line">            <span class="keyword">new</span> Text(</span><br><span class="line">              <span class="string">&#x27;<span class="subst">$_counter</span>&#x27;</span>,</span><br><span class="line">              style: Theme</span><br><span class="line">                  .of(context)</span><br><span class="line">                  .textTheme</span><br><span class="line">                  .display1,</span><br><span class="line">            ),</span><br><span class="line">          ],</span><br><span class="line">        ),</span><br><span class="line">      ),</span><br><span class="line">      floatingActionButton: <span class="keyword">new</span> FloatingActionButton(</span><br><span class="line">        onPressed: _incrementCounter,</span><br><span class="line">        tooltip: DemoLocalizations.of(context).inc,                           <span class="comment">// 此处4</span></span><br><span class="line">        child: <span class="keyword">new</span> Icon(Icons.add),</span><br><span class="line">      ),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行！！</p>
+<p><img src="http://backup.flutter-dev.cn/device-2017-12-21-231417.png" alt=""></p>
+<p>😂😂😂 </p>
+<p>当遇到这种突如其来的问题的时候一定要淡定，喝口水，眺望一会远方。。。</p>
+<p>接着仔细看报错信息：The getter ‘taskTitle’ was called on null.说的很明确，在 1 处出现了空指针，我们没有像预想的一样拿到 DemoLocalizations 对象。那问题一定出在 Localizations.of 方法内部，跟进去看看：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> T of&lt;T&gt;(BuildContext context, <span class="built_in">Type</span> type) &#123;</span><br><span class="line">  <span class="keyword">assert</span>(context != <span class="keyword">null</span>);</span><br><span class="line">  <span class="keyword">assert</span>(type != <span class="keyword">null</span>);</span><br><span class="line">  <span class="keyword">final</span> _LocalizationsScope scope =       </span><br><span class="line">           context.inheritFromWidgetOfExactType(_LocalizationsScope); <span class="comment">// 此处</span></span><br><span class="line">  <span class="keyword">return</span> scope?.localizationsState?.resourcesFor&lt;T&gt;(type);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>关键在 <code>context.inheritFromWidgetOfExactType</code>处，继续进去：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">InheritedWidget inheritFromWidgetOfExactType(<span class="built_in">Type</span> targetType);</span><br></pre></td></tr></table></figure>
+<p>很简单，这是一个抽象 BuildContext 的抽象方法。此时如果再要继续追踪实现类就比较困难了，通过这个方法的注释可以知道，它是通过 targetType 来获取 context 最近父节点的对象，前提条件是 targetType 对应的类必须是 InheriteWidget 的子类。通过查看 <code>_LocalizationsScope</code>发现其正是继承自 InheriteWidget。那就是说没有从 context 的父节点中找到 _LocalizationsScope。此时我们再看一下调用 taskTitle 的地方：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyApp</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> MaterialApp(</span><br><span class="line">      title: DemoLocalizations.of(context).taskTitle,                           <span class="comment">// 此处</span></span><br><span class="line">      theme: <span class="keyword">new</span> ThemeData(</span><br><span class="line">        primarySwatch: Colors.blue,</span><br><span class="line">      ),</span><br><span class="line">      home: <span class="keyword">new</span> MyHomePage(title: DemoLocalizations.of(context).titleBarTitle),</span><br><span class="line">      localizationsDelegates: [</span><br><span class="line">        GlobalMaterialLocalizations.delegate,</span><br><span class="line">        GlobalWidgetsLocalizations.delegate,</span><br><span class="line">        DemoLocalizationsDelegate.delegate,</span><br><span class="line">      ],</span><br><span class="line">      supportedLocales: [</span><br><span class="line">        <span class="keyword">const</span> Locale(<span class="string">&#x27;zh&#x27;</span>, <span class="string">&#x27;CH&#x27;</span>),</span><br><span class="line">        <span class="keyword">const</span> Locale(<span class="string">&#x27;en&#x27;</span>, <span class="string">&#x27;US&#x27;</span>),</span><br><span class="line">      ],</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>仔细看 taskTitle 处的 context 是从最外层的 build 方法中传入的，而在之前说过 Localizations 这个组件是在 MaterialApp 中被嵌套的，也就是说能找到 DemoLocalizations 的 context 至少需要是 MaterialApp 内部的，而此时的 context 是无法找到 DemoLocalizations 对象的。但这样进入死胡同了，实现多语言的 DemoLocalizations 需要在 MaterialApp 内部才能被找到，而这里的 title 用到的 context 是在 MaterialApp 外部的。</p>
+<p>难道多语言在 title 上没法实现？</p>
+<p>喝口水，眺望下远方。</p>
+<p>既然如此我们不如看下这个 title 的说明：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// <span class="markdown">A one-line description used by the device to identify the app for the user.</span></span></span><br><span class="line"><span class="comment">///</span></span><br><span class="line"><span class="comment">/// <span class="markdown">On Android the titles appear above the task manager&#x27;s app snapshots which are</span></span></span><br><span class="line"><span class="comment">/// <span class="markdown">displayed when the user presses the &quot;recent apps&quot; button. Similarly, on</span></span></span><br><span class="line"><span class="comment">/// <span class="markdown">iOS the titles appear in the App Switcher when the user double presses the</span></span></span><br><span class="line"><span class="comment">/// <span class="markdown">home button.</span></span></span><br><span class="line"><span class="comment">///</span></span><br><span class="line"><span class="comment">/// <span class="markdown">To provide a localized title instead, use [onGenerateTitle].</span></span></span><br><span class="line"><span class="comment">///</span></span><br><span class="line"><span class="comment">/// <span class="markdown">This value is passed unmodified to [WidgetsApp.title].</span></span></span><br><span class="line"><span class="keyword">final</span> <span class="built_in">String</span> title;</span><br></pre></td></tr></table></figure>
+<p>请注意这句：To provide a localized title instead, use [onGenerateTitle].</p>
+<p>没想到啊，如果要对 title 进行多语言处理还需要 <code>onGenerateTitle</code>这个属性。那就简单了，更改如下：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyApp</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> MaterialApp(</span><br><span class="line">      onGenerateTitle: (context)&#123;                                              <span class="comment">// 此处</span></span><br><span class="line">        <span class="keyword">return</span> DemoLocalizations.of(context).taskTitle;</span><br><span class="line">      &#125;,</span><br><span class="line">      theme: <span class="keyword">new</span> ThemeData(</span><br><span class="line">        primarySwatch: Colors.blue,</span><br><span class="line">      ),</span><br><span class="line">      home: <span class="keyword">new</span> MyHomePage(title: DemoLocalizations.of(context).titleBarTitle),</span><br><span class="line">      localizationsDelegates: [</span><br><span class="line">        GlobalMaterialLocalizations.delegate,</span><br><span class="line">        GlobalWidgetsLocalizations.delegate,</span><br><span class="line">        DemoLocalizationsDelegate.delegate,</span><br><span class="line">      ],</span><br><span class="line">      supportedLocales: [</span><br><span class="line">        <span class="keyword">const</span> Locale(<span class="string">&#x27;zh&#x27;</span>, <span class="string">&#x27;CH&#x27;</span>),</span><br><span class="line">        <span class="keyword">const</span> Locale(<span class="string">&#x27;en&#x27;</span>, <span class="string">&#x27;US&#x27;</span>),</span><br><span class="line">      ],</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>此时运行会发现 taskTitle 处已经没问题了，但 titleBarTitle 这边还是报错，原因一样它的 context 使用的是 MaterialApp 外部的 context。但这里的 title 是可以被移动到 MyHomePage 内部初始的，所以很好修改，将 MyHomePage 构造方法中的 title 参数移除，直接在 AppBar 内部赋值：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyHomePage</span> <span class="keyword">extends</span> <span class="title">StatefulWidget</span> </span>&#123;</span><br><span class="line">  MyHomePage(&#123;Key key&#125;) : <span class="keyword">super</span>(key: key);</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  _MyHomePageState createState() =&gt; <span class="keyword">new</span> _MyHomePageState();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_MyHomePageState</span> <span class="keyword">extends</span> <span class="title">State</span>&lt;<span class="title">MyHomePage</span>&gt; </span>&#123;</span><br><span class="line">  <span class="built_in">int</span> _counter = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> _incrementCounter() &#123;</span><br><span class="line">    showDatePicker(context: context,</span><br><span class="line">        initialDate: <span class="keyword">new</span> <span class="built_in">DateTime</span>.now(),</span><br><span class="line">        firstDate: <span class="keyword">new</span> <span class="built_in">DateTime</span>.now().subtract(<span class="keyword">new</span> <span class="built_in">Duration</span>(days: <span class="number">30</span>)),</span><br><span class="line">        lastDate: <span class="keyword">new</span> <span class="built_in">DateTime</span>.now().add(<span class="keyword">new</span> <span class="built_in">Duration</span>(days: <span class="number">30</span>))).then((v) &#123;&#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Scaffold(</span><br><span class="line">      appBar: <span class="keyword">new</span> AppBar(</span><br><span class="line">        title: <span class="keyword">new</span> Text(DemoLocalizations.of(context).titleBarTitle),            <span class="comment">// 此处</span></span><br><span class="line">      ),</span><br><span class="line">      body: <span class="keyword">new</span> Center(</span><br><span class="line">        child: <span class="keyword">new</span> Column(</span><br><span class="line">          mainAxisAlignment: MainAxisAlignment.center,</span><br><span class="line">          children: &lt;Widget&gt;[</span><br><span class="line">            <span class="keyword">new</span> Text(</span><br><span class="line">              DemoLocalizations.of(context).clickTop,</span><br><span class="line">            ),</span><br><span class="line">            <span class="keyword">new</span> Text(</span><br><span class="line">              <span class="string">&#x27;<span class="subst">$_counter</span>&#x27;</span>,</span><br><span class="line">              style: Theme</span><br><span class="line">                  .of(context)</span><br><span class="line">                  .textTheme</span><br><span class="line">                  .display1,</span><br><span class="line">            ),</span><br><span class="line">          ],</span><br><span class="line">        ),</span><br><span class="line">      ),</span><br><span class="line">      floatingActionButton: <span class="keyword">new</span> FloatingActionButton(</span><br><span class="line">        onPressed: _incrementCounter,</span><br><span class="line">        tooltip: DemoLocalizations.of(context).inc,</span><br><span class="line">        child: <span class="keyword">new</span> Icon(Icons.add),</span><br><span class="line">      ),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>再运行：</p>
+<p><img src="http://backup.flutter-dev.cn/device-2017-12-22-001905.png" alt=""></p>
+<p><img src="http://backup.flutter-dev.cn/device-2017-12-22-002133.png" alt=""></p>
+<p>完美。</p>
+<h2 id="三、国际化的初始化过程"><a href="#三、国际化的初始化过程" class="headerlink" title="三、国际化的初始化过程"></a>三、国际化的初始化过程</h2><p>上一节中简单介绍了如何在 MaterialApp 实现国际化，各位可能也注意到了最终语言资源的选择还是留给了 DemoLocalizations，而对语言资源本身是以什么形式存在没有特别规定。在上文中我将两国的语言放到了一个 Map 中，自然也可以将其放在服务器上，在程序启动后进行拉取，这些都是后话了，在这一节中我简单剖析下源码，看看 DemoLocalizatins 是如何在程序运行后被初始化的。</p>
+<p>上面已经说过官方鼓励我们使用 MaterialApp 作为程序入口，我们就从 MaterialApp 出发，首先看 MaterialApp 的构造方法：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">MaterialApp(&#123; <span class="comment">// can&#x27;t be const because the asserts use methods on Map :-(</span></span><br><span class="line">  Key key,</span><br><span class="line">  <span class="keyword">this</span>.title: <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">  <span class="keyword">this</span>.onGenerateTitle,</span><br><span class="line">  <span class="keyword">this</span>.color,</span><br><span class="line">  <span class="keyword">this</span>.theme,</span><br><span class="line">  <span class="keyword">this</span>.home,</span><br><span class="line">  <span class="keyword">this</span>.routes: <span class="keyword">const</span> &lt;<span class="built_in">String</span>, WidgetBuilder&gt;&#123;&#125;,</span><br><span class="line">  <span class="keyword">this</span>.initialRoute,</span><br><span class="line">  <span class="keyword">this</span>.onGenerateRoute,</span><br><span class="line">  <span class="keyword">this</span>.onUnknownRoute,</span><br><span class="line">  <span class="keyword">this</span>.locale,</span><br><span class="line">  <span class="keyword">this</span>.localizationsDelegates,</span><br><span class="line">  <span class="keyword">this</span>.localeResolutionCallback,</span><br><span class="line">  <span class="keyword">this</span>.supportedLocales: <span class="keyword">const</span> &lt;Locale&gt;[<span class="keyword">const</span> Locale(<span class="string">&#x27;en&#x27;</span>, <span class="string">&#x27;US&#x27;</span>)],</span><br><span class="line">  <span class="keyword">this</span>.navigatorObservers: <span class="keyword">const</span> &lt;NavigatorObserver&gt;[],</span><br><span class="line">  <span class="keyword">this</span>.debugShowMaterialGrid: <span class="keyword">false</span>,</span><br><span class="line">  <span class="keyword">this</span>.showPerformanceOverlay: <span class="keyword">false</span>,</span><br><span class="line">  <span class="keyword">this</span>.checkerboardRasterCacheImages: <span class="keyword">false</span>,</span><br><span class="line">  <span class="keyword">this</span>.checkerboardOffscreenLayers: <span class="keyword">false</span>,</span><br><span class="line">  <span class="keyword">this</span>.showSemanticsDebugger: <span class="keyword">false</span>,</span><br><span class="line">  <span class="keyword">this</span>.debugShowCheckedModeBanner: <span class="keyword">true</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>上面的 <code>localizationsDelegates</code>是多语言的关键点，由于 MaterialApp 是一个 StatefulWidget，所以直接看其对应的 State 类 <code>_MaterialAppState</code>中的 build 方法，代码有点长：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">final</span> ThemeData theme = widget.theme ?? <span class="keyword">new</span> ThemeData.fallback();</span><br><span class="line">    Widget result = <span class="keyword">new</span> AnimatedTheme(                                <span class="comment">// 1</span></span><br><span class="line">      data: theme,</span><br><span class="line">      isMaterialAppTheme: <span class="keyword">true</span>,</span><br><span class="line">      child: <span class="keyword">new</span> WidgetsApp(                                          <span class="comment">//2</span></span><br><span class="line">        key: <span class="keyword">new</span> GlobalObjectKey(<span class="keyword">this</span>),</span><br><span class="line">        title: widget.title,</span><br><span class="line">        onGenerateTitle: widget.onGenerateTitle,</span><br><span class="line">        textStyle: _errorTextStyle,</span><br><span class="line">        <span class="comment">// blue is the primary color of the default theme</span></span><br><span class="line">        color: widget.color ?? theme?.primaryColor ?? Colors.blue,</span><br><span class="line">        navigatorObservers:</span><br><span class="line">            <span class="keyword">new</span> <span class="built_in">List</span>&lt;NavigatorObserver&gt;.from(widget.navigatorObservers)</span><br><span class="line">              ..add(_heroController),</span><br><span class="line">        initialRoute: widget.initialRoute,</span><br><span class="line">        onGenerateRoute: _onGenerateRoute,</span><br><span class="line">        onUnknownRoute: _onUnknownRoute,</span><br><span class="line">        locale: widget.locale,</span><br><span class="line">        localizationsDelegates: _localizationsDelegates,                  <span class="comment">//3</span></span><br><span class="line">        localeResolutionCallback: widget.localeResolutionCallback,</span><br><span class="line">        supportedLocales: widget.supportedLocales,</span><br><span class="line">        showPerformanceOverlay: widget.showPerformanceOverlay,</span><br><span class="line">        checkerboardRasterCacheImages: widget.checkerboardRasterCacheImages,</span><br><span class="line">        checkerboardOffscreenLayers: widget.checkerboardOffscreenLayers,</span><br><span class="line">        showSemanticsDebugger: widget.showSemanticsDebugger,</span><br><span class="line">        debugShowCheckedModeBanner: widget.debugShowCheckedModeBanner,</span><br><span class="line">        inspectorSelectButtonBuilder: (BuildContext context, VoidCallback onPressed) &#123;</span><br><span class="line">          <span class="keyword">return</span> <span class="keyword">new</span> FloatingActionButton(</span><br><span class="line">            child: <span class="keyword">const</span> Icon(Icons.search),</span><br><span class="line">            onPressed: onPressed,</span><br><span class="line">            mini: <span class="keyword">true</span>,</span><br><span class="line">          );</span><br><span class="line">        &#125;,</span><br><span class="line">      )</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">assert</span>(() &#123;</span><br><span class="line">      <span class="keyword">if</span> (widget.debugShowMaterialGrid) &#123;    <span class="comment">//此处如果有配置，则会显示网格</span></span><br><span class="line">        result = <span class="keyword">new</span> GridPaper(</span><br><span class="line">          color: <span class="keyword">const</span> Color(<span class="number">0xE0F9BBE0</span>),</span><br><span class="line">          interval: <span class="number">8.0</span>,</span><br><span class="line">          divisions: <span class="number">2</span>,</span><br><span class="line">          subdivisions: <span class="number">1</span>,</span><br><span class="line">          child: result,</span><br><span class="line">        );</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ScrollConfiguration(                                <span class="comment">// 4</span></span><br><span class="line">      behavior: <span class="keyword">new</span> _MaterialScrollBehavior(),</span><br><span class="line">      child: result,</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>首先在 3 处可以看到 _localizationsDelegates 被赋值给了 WidgetsApp 的 localizationsDelegates 参数。在看 1、2、4 处分别又在原有的 Widget 上做了包裹，此时的 widget 树层次如下图：</p>
+<p><img src="http://backup.flutter-dev.cn/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-22%20%E4%B8%8A%E5%8D%8810.45.47.png" alt=""></p>
+<p>接着进入 WidgetApp ，它也是个 StatefulWidget，直接看它的 State 类 <code>_WidgetsAppState</code>的 build 方法：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">Widget build(BuildContext context) &#123;</span><br><span class="line">   Widget result = <span class="keyword">new</span> Navigator(                                    <span class="comment">// 1</span></span><br><span class="line">     key: _navigator,</span><br><span class="line">     initialRoute: widget.initialRoute ?? ui.<span class="built_in">window</span>.defaultRouteName,</span><br><span class="line">     onGenerateRoute: widget.onGenerateRoute,</span><br><span class="line">     onUnknownRoute: widget.onUnknownRoute,</span><br><span class="line">     observers: widget.navigatorObservers,</span><br><span class="line">   );</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> (widget.textStyle != <span class="keyword">null</span>) &#123;</span><br><span class="line">     result = <span class="keyword">new</span> DefaultTextStyle(                                    <span class="comment">//2</span></span><br><span class="line">       style: widget.textStyle,</span><br><span class="line">       child: result,</span><br><span class="line">     );</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   ... <span class="comment">//此处省略调试相关代码</span></span><br><span class="line"></span><br><span class="line">   <span class="keyword">return</span> <span class="keyword">new</span> MediaQuery(                                              <span class="comment">//3</span></span><br><span class="line">     data: <span class="keyword">new</span> MediaQueryData.fromWindow(ui.<span class="built_in">window</span>),</span><br><span class="line">     child: <span class="keyword">new</span> Localizations(                                         <span class="comment">//4</span></span><br><span class="line">       locale: widget.locale ?? _locale,</span><br><span class="line">       delegates: _localizationsDelegates.toList(),</span><br><span class="line">       <span class="comment">// This Builder exists to provide a context below the Localizations widget.</span></span><br><span class="line">       <span class="comment">// The onGenerateCallback() can refer to Localizations via its context</span></span><br><span class="line">       <span class="comment">// parameter.</span></span><br><span class="line">       child: <span class="keyword">new</span> Builder(                                             <span class="comment">//5</span></span><br><span class="line">         builder: (BuildContext context) &#123;</span><br><span class="line">           <span class="built_in">String</span> title = widget.title;</span><br><span class="line">           <span class="keyword">if</span> (widget.onGenerateTitle != <span class="keyword">null</span>) &#123;</span><br><span class="line">             title = widget.onGenerateTitle(context);</span><br><span class="line">             <span class="keyword">assert</span>(title != <span class="keyword">null</span>, <span class="string">&#x27;onGenerateTitle must return a non-null String&#x27;</span>);</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">return</span> <span class="keyword">new</span> Title(                                            <span class="comment">//6</span></span><br><span class="line">             title: title,</span><br><span class="line">             color: widget.color,</span><br><span class="line">             child: result,</span><br><span class="line">           );</span><br><span class="line">         &#125;,</span><br><span class="line">       ),</span><br><span class="line">     ),</span><br><span class="line">   );</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>在 4 处终于见到了我们熟悉的身影 <code>Localizatins</code>。_localizationsDelegates 也是被传递进了 Localizations。此时的 widget 树层次如下：</p>
+<p><img src="http://backup.flutter-dev.cn/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-22%20%E4%B8%8A%E5%8D%8810.55.52.png" alt=""></p>
+<p>层次如此之多，但我们关心只是其中的 Localizations，所以抛开其他不看，进入 Localizations 看看。</p>
+<p>不出意外 Localizations 也是一个 StatefulWidget，此时我们不需要关心它的 build 方法，而是应该关注其内部的 <code>initState</code> 方法，如果有数据需要初始化，不出意外就是在这里进行。</p>
+<p>initState 方法很短：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@override</span></span><br><span class="line"><span class="keyword">void</span> initState() &#123;</span><br><span class="line">  <span class="keyword">super</span>.initState();</span><br><span class="line">  load(widget.locale);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>继续进入 load 方法：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> load(Locale locale) &#123;</span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">Iterable</span>&lt;LocalizationsDelegate&lt;<span class="built_in">dynamic</span>&gt;&gt; delegates = widget.delegates; <span class="comment">// 1</span></span><br><span class="line">  <span class="keyword">if</span> (delegates == <span class="keyword">null</span> || delegates.isEmpty) &#123;</span><br><span class="line">    _locale = locale;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">Map</span>&lt;<span class="built_in">Type</span>, <span class="built_in">dynamic</span>&gt; typeToResources;</span><br><span class="line">  <span class="keyword">final</span> Future&lt;<span class="built_in">Map</span>&lt;<span class="built_in">Type</span>, <span class="built_in">dynamic</span>&gt;&gt; typeToResourcesFuture = _loadAll(locale, delegates) <span class="comment">//2</span></span><br><span class="line">    .then((<span class="built_in">Map</span>&lt;<span class="built_in">Type</span>, <span class="built_in">dynamic</span>&gt; value) &#123;</span><br><span class="line">      <span class="keyword">return</span> typeToResources = value;</span><br><span class="line">    &#125;);</span><br><span class="line">  </span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 1 处的 delegates 即一开始从 MaterialApp 传入的 delegate 数组，这里转成立可迭代对象。接着看 2 处的 <code>_loadAll</code> 方法返回的 typeToResourcesFuture ，其中的值类型为 <code>Map&lt;Type, dynamic&gt;</code>，这里可以推敲出来里边的 Type 对应的就是不同的 Localizations，而 dynamic 则是其实例。带着这样的想法看 _loadAll 方法：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">Future&lt;<span class="built_in">Map</span>&lt;<span class="built_in">Type</span>, <span class="built_in">dynamic</span>&gt;&gt; _loadAll(Locale locale, <span class="built_in">Iterable</span>&lt;LocalizationsDelegate&lt;<span class="built_in">dynamic</span>&gt;&gt; allDelegates) &#123;</span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">Map</span>&lt;<span class="built_in">Type</span>, <span class="built_in">dynamic</span>&gt; output = &lt;<span class="built_in">Type</span>, <span class="built_in">dynamic</span>&gt;&#123;&#125;;</span><br><span class="line">  <span class="built_in">List</span>&lt;_Pending&gt; pendingList;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Only load the first delegate for each delegate type that supports</span></span><br><span class="line">  <span class="comment">// locale.languageCode.</span></span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">Set</span>&lt;<span class="built_in">Type</span>&gt; types = <span class="keyword">new</span> <span class="built_in">Set</span>&lt;<span class="built_in">Type</span>&gt;();</span><br><span class="line">  <span class="keyword">final</span> <span class="built_in">List</span>&lt;LocalizationsDelegate&lt;<span class="built_in">dynamic</span>&gt;&gt; delegates = &lt;LocalizationsDelegate&lt;<span class="built_in">dynamic</span>&gt;&gt;[];</span><br><span class="line">  <span class="keyword">for</span> (LocalizationsDelegate&lt;<span class="built_in">dynamic</span>&gt; delegate <span class="keyword">in</span> allDelegates) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!types.contains(delegate.type) &amp;&amp; delegate.isSupported(locale)) &#123;</span><br><span class="line">      types.add(delegate.type);</span><br><span class="line">      delegates.add(delegate);          </span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span> (LocalizationsDelegate&lt;<span class="built_in">dynamic</span>&gt; delegate <span class="keyword">in</span> delegates) &#123;</span><br><span class="line">    <span class="keyword">final</span> Future&lt;<span class="built_in">dynamic</span>&gt; inputValue = delegate.load(locale);    <span class="comment">// 1</span></span><br><span class="line">    <span class="built_in">dynamic</span> completedValue;</span><br><span class="line">    <span class="keyword">final</span> Future&lt;<span class="built_in">dynamic</span>&gt; futureValue = inputValue.then&lt;<span class="built_in">dynamic</span>&gt;((<span class="built_in">dynamic</span> value) &#123;</span><br><span class="line">      <span class="keyword">return</span> completedValue = value;                             <span class="comment">// 2</span></span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">if</span> (completedValue != <span class="keyword">null</span>) &#123; <span class="comment">// inputValue was a SynchronousFuture</span></span><br><span class="line">      <span class="keyword">final</span> <span class="built_in">Type</span> type = delegate.type;</span><br><span class="line">      <span class="keyword">assert</span>(!output.containsKey(type));</span><br><span class="line">      output[type] = completedValue;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      pendingList ??= &lt;_Pending&gt;[];</span><br><span class="line">      pendingList.add(<span class="keyword">new</span> _Pending(delegate, futureValue));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// All of the delegate.load() values were synchronous futures, we&#x27;re done.</span></span><br><span class="line">  <span class="keyword">if</span> (pendingList == <span class="keyword">null</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> SynchronousFuture&lt;<span class="built_in">Map</span>&lt;<span class="built_in">Type</span>, <span class="built_in">dynamic</span>&gt;&gt;(output);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Some of delegate.load() values were asynchronous futures. Wait for them.</span></span><br><span class="line">  <span class="keyword">return</span> Future.wait&lt;<span class="built_in">dynamic</span>&gt;(pendingList.map((_Pending p) =&gt; p.futureValue))</span><br><span class="line">    .then&lt;<span class="built_in">Map</span>&lt;<span class="built_in">Type</span>, <span class="built_in">dynamic</span>&gt;&gt;((<span class="built_in">List</span>&lt;<span class="built_in">dynamic</span>&gt; values) &#123;</span><br><span class="line">      <span class="keyword">assert</span>(values.length == pendingList.length);</span><br><span class="line">      <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; values.length; i += <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="built_in">Type</span> type = pendingList[i].delegate.type;</span><br><span class="line">        <span class="keyword">assert</span>(!output.containsKey(type));</span><br><span class="line">        output[type] = values[i];</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> output;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看 1 处，调用到了 deletegate 的 load 方法，返回一个 Future ，这里为什么不直接返回DemoLocalizations 的实例而要返回 Future，这个在前面也提到了如果你的资源是放在服务器上的，那么这就是一个耗时操作，所以在此处用了 Future。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@override</span></span><br><span class="line">Future&lt;DemoLocalizations&gt; load(Locale locale) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> SynchronousFuture&lt;DemoLocalizations&gt;(<span class="keyword">new</span> DemoLocalizations(locale));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由于这里返回的是 SynchronousFuture ，所以在 2 处的代码会被顺序执行，此时 completedValue 就是 DemoLocalizations 的实例对象了。然后 completedValue 被放入了 output 接着就返回出去了，最后赋值给了 _LocalizationsState 的 _typeToResources 变量。</p>
+<p>到目前为止整个多语言的加载就完成了，剩下的就是等着被使用。下面看一下使用的方式：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DemoLocalizations.of(context).taskTitle</span><br></pre></td></tr></table></figure>
+<p>简单粗暴，根本看不出来是怎么拿到 DemoLocalizations 对象的。不多说，看代码：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> Localizations.of(context, DemoLocalizations);</span><br></pre></td></tr></table></figure>
+<p>内部调用的是 Localizations 的 of 静态方法，接着看：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> T of&lt;T&gt;(BuildContext context, <span class="built_in">Type</span> type) &#123;</span><br><span class="line">  <span class="keyword">assert</span>(context != <span class="keyword">null</span>);</span><br><span class="line">  <span class="keyword">assert</span>(type != <span class="keyword">null</span>);</span><br><span class="line">  <span class="keyword">final</span> _LocalizationsScope scope = context.inheritFromWidgetOfExactType(_LocalizationsScope);</span><br><span class="line">  <span class="keyword">return</span> scope?.localizationsState?.resourcesFor&lt;T&gt;(type);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>前面已经讲解过 context.inheritFromWidgetOfExactType 的作用，这里的 scope 就是最靠近 context 节点的 _LocalizationsScope 类型的节点。但我们看了上面的 widget 树的层次图，并没有看到 _LocalizationsScope 这个 widget,它是在什么时候被添加进去的呢？</p>
+<p>回到 _LocalizationsState 的 build 方法：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@override</span></span><br><span class="line">Widget build(BuildContext context) &#123;</span><br><span class="line">  <span class="keyword">if</span> (_locale == <span class="keyword">null</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Container();</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> _LocalizationsScope(</span><br><span class="line">    key: _localizedResourcesScopeKey,</span><br><span class="line">    locale: _locale,</span><br><span class="line">    localizationsState: <span class="keyword">this</span>,</span><br><span class="line">    typeToResources: _typeToResources,</span><br><span class="line">    child: <span class="keyword">new</span> Directionality(</span><br><span class="line">      textDirection: _textDirection,</span><br><span class="line">      child: widget.child,</span><br><span class="line">    ),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>真想(●—●)。在 Localizations 的内部，它将它原本的子节点外又嵌套了 Directionality、_LocalizationsScope、Container 这三层。其中 _LocalizationsScope 就是我们想找的。</p>
+<p>接着看：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> scope?.localizationsState?.resourcesFor&lt;T&gt;(type);</span><br></pre></td></tr></table></figure>
+<p>此处调用了 _LocalizationsState 的 resourcesFor 方法：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">T resourcesFor&lt;T&gt;(<span class="built_in">Type</span> type) &#123;</span><br><span class="line">  <span class="keyword">assert</span>(type != <span class="keyword">null</span>);</span><br><span class="line">  <span class="keyword">final</span> T resources = _typeToResources[type];</span><br><span class="line">  <span class="keyword">return</span> resources;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>到这差不多就结束了，这里根据 type 从 _typeToResources 中取出了 DemoLocalizations 的实例。<br>最后再把完整的 widget 树的层次展示一下：</p>
+<p><img src="http://backup.flutter-dev.cn/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-22%20%E4%B8%8B%E5%8D%882.29.45.png" alt=""></p>
+<h2 id="四、简单的-App-内语言切换"><a href="#四、简单的-App-内语言切换" class="headerlink" title="四、简单的 App 内语言切换"></a>四、简单的 App 内语言切换</h2><p>下面我见到介绍一下如何在不切换手机系统的语言的情况下来切换 Flutter 应用内的语言。主要用到的是 Localizations 的 override 方法。具体不多介绍，看下面我自定义的 StatefulWidget 类 FreeLocalizations 和它的 State 类 _FreeLocalizations：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FreeLocalizations</span> <span class="keyword">extends</span> <span class="title">StatefulWidget</span></span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">final</span> Widget child;</span><br><span class="line"></span><br><span class="line">  FreeLocalizations(&#123;Key key,<span class="keyword">this</span>.child&#125;):<span class="keyword">super</span>(key:key);</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  State&lt;FreeLocalizations&gt; createState() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> _FreeLocalizations();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_FreeLocalizations</span> <span class="keyword">extends</span> <span class="title">State</span>&lt;<span class="title">FreeLocalizations</span>&gt;</span>&#123;</span><br><span class="line"></span><br><span class="line">  Locale _locale = <span class="keyword">const</span> Locale(<span class="string">&#x27;zh&#x27;</span>,<span class="string">&#x27;CH&#x27;</span>);</span><br><span class="line"></span><br><span class="line">  changeLocale(Locale locale)&#123;</span><br><span class="line">    setState(()&#123;</span><br><span class="line">      _locale = locale;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Localizations.override(</span><br><span class="line">      context: context,</span><br><span class="line">      locale: _locale,</span><br><span class="line">      child: widget.child,</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面代码的意思比较清晰，就是在调用 changeLocale 方法的时候修改其内部 widget 的语言。<br>下面来如何使用：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  runApp(<span class="keyword">new</span> MyApp());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">GlobalKey&lt;_FreeLocalizations&gt; freeLocalizationStateKey = <span class="keyword">new</span> GlobalKey&lt;_FreeLocalizations&gt;();   <span class="comment">// 1</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyApp</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> MaterialApp(</span><br><span class="line">      onGenerateTitle: (context)&#123;</span><br><span class="line">        <span class="keyword">return</span> DemoLocalizations.of(context).taskTitle;</span><br><span class="line">      &#125;,</span><br><span class="line">      theme: <span class="keyword">new</span> ThemeData(</span><br><span class="line">        primarySwatch: Colors.blue,</span><br><span class="line">      ),</span><br><span class="line">      home: <span class="keyword">new</span> Builder(builder: (context)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> FreeLocalizations(</span><br><span class="line">          key: freeLocalizationStateKey,</span><br><span class="line">          child: <span class="keyword">new</span> MyHomePage(),</span><br><span class="line">        );</span><br><span class="line">      &#125;),</span><br><span class="line">      localizationsDelegates: [</span><br><span class="line">        GlobalMaterialLocalizations.delegate,</span><br><span class="line">        GlobalWidgetsLocalizations.delegate,</span><br><span class="line">        DemoLocalizationsDelegate.delegate,</span><br><span class="line">      ],</span><br><span class="line">      supportedLocales: [</span><br><span class="line">        <span class="keyword">const</span> Locale(<span class="string">&#x27;zh&#x27;</span>, <span class="string">&#x27;CH&#x27;</span>),</span><br><span class="line">        <span class="keyword">const</span> Locale(<span class="string">&#x27;en&#x27;</span>, <span class="string">&#x27;US&#x27;</span>),</span><br><span class="line">      ],</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>注意想要在 FreeLocalizations 外部去调用其方法需要使用到 GlobalKey 的帮助，用法见 1 处。让后我们将 MyHomePage 放入 FreeLocalizations 内部。</p>
+<p>接着在点击按钮的时候调用如下方法：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> changeLocale()&#123;</span><br><span class="line">  <span class="keyword">if</span>(flag)&#123;</span><br><span class="line">    freeLocalizationStateKey.currentState.changeLocale(<span class="keyword">const</span> Locale(<span class="string">&#x27;zh&#x27;</span>,<span class="string">&quot;CH&quot;</span>));</span><br><span class="line">  &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    freeLocalizationStateKey.currentState.changeLocale(<span class="keyword">const</span> Locale(<span class="string">&#x27;en&#x27;</span>,<span class="string">&quot;US&quot;</span>));</span><br><span class="line">  &#125;</span><br><span class="line">  flag = !flag;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果如下：</p>
+<p><img src="http://backup.flutter-dev.cn/localizatiion_free.gif" alt=""></p>
+<p>这一小节我讲的比较简单，但如果你看明白了二、三两节，那弄明白这里多语言是怎么切换的应该是比较容易的。</p>
+<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><p><img src="http://backup.flutter-dev.cn/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202017-12-22%20%E4%B8%8B%E5%8D%883.34.41.png" alt=""></p>
+<p>思维导图地址：<a target="_blank" rel="noopener" href="https://my.mindnode.com/7u6RudyGs5bqzX1WrxY5XtZZqUDBzqvL2NioVbrr">https://my.mindnode.com/7u6RudyGs5bqzX1WrxY5XtZZqUDBzqvL2NioVbrr</a><br>文章中出现的代码的地址：<a target="_blank" rel="noopener" href="https://github.com/flutter-dev/internationalizing">https://github.com/flutter-dev/internationalizing</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>番茄沙司
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://zqlxtt.cn/2018/03/06/flutter-localizations/" title="Flutter 中的国际化">https://zqlxtt.cn/2018/03/06/flutter-localizations/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/flutter/" rel="tag"># flutter</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/12/07/jvm-preview/" rel="prev" title="JVM 概览">
+                  <i class="fa fa-chevron-left"></i> JVM 概览
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/09/11/flutter-livedata/" rel="next" title="在 Flutter 中简单实现 LiveData">
+                  在 Flutter 中简单实现 LiveData <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">公安备案号 </a><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=32060202000636" rel="noopener" target="_blank">苏ICP备20012497号 </a>
+  </div>
+
+<div class="copyright">
+  &copy; 2016 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">番茄沙司</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"scale":1,"hHeadPos":0.5,"vHeadPos":0.618,"jsonPath":"/live2dw/assets/assets/tororo.model.json"},"display":{"superSample":2,"width":150,"height":300,"position":"left","hOffset":0,"vOffset":-20},"mobile":{"show":true,"scale":0.5},"react":{"opacityDefault":0.7,"opacityOnHover":0.2},"archive_generator":{"per_page":0,"yearly":false,"monthly":false,"daily":false},"log":false});</script></body>
+</html>
