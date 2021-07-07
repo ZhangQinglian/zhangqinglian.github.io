@@ -100,7 +100,7 @@ theme: hexo-theme-next
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: 'git'
-  message: update
+  message: 'update blog'
   repo: git@github.com:ZhangQinglian/zhangqinglian.github.io.git
   branch: main
 
