@@ -12,7 +12,7 @@ cover: "https://blog-1256162814.cos.ap-nanjing.myqcloud.com/%E9%9F%B3%E4%B9%90/l
 {% aplayerlist %}
 {
     "narrow": false,
-    "autoplay": true,
+    "autoplay": false,
     "mode": "random",       
     "showlrc": 3, 
     "mutex": true,   
