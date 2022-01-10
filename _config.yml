@@ -104,32 +104,6 @@ deploy:
   repo: git@github.com:ZhangQinglian/zhangqinglian.github.io.git
   branch: main
 
-douban:
-  user: 119947093
-  builtin: true
-  book:
-    title: '书是人类进步的阶梯'
-    quote: '你的气质里藏着你走过的路，读过的书和爱过的人'
-    meta: true
-    comments: true
-    top_img: https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/books.jpg
-    aside: true
-  movie:
-    title: '影视'
-    quote: '艺术来源生活又高于生活'
-    meta: true
-    comments: true
-    top_img: https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/the_lone_ranger_movie.jpg
-    aside: true
-  game:
-    title: '游戏'
-    quote: '适度游戏，有益身心'
-    meta: true
-    comments: true
-    top_img: https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/super_mario.jpg
-    aside: true
-  timeout: 10000 
-
 live2d:
   enable: true
   scriptFrom: local
