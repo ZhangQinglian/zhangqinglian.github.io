@@ -3,6 +3,7 @@ title: JVM 概览
 date: 2017-12-07 21:38:50
 tags: java 
 cover: https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/1.webp
+top: 6
 ---
 ## Java
 说到 Java，大家第一时间想到的类似于下面的程序语句：

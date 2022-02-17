@@ -2,10 +2,11 @@
 title: 两年前仿抖音app
 date: 2020-09-12 21:51:41
 tags: android
-cover: http://cdn.zqlxtt.cn/fanqieshasithumb.jpg
+cover: https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/fanqieshasithumb.jpeg
+top: 10
 ---
 
-![截图](http://cdn.zqlxtt.cn/fanqieshasithumb.jpg)
+![截图](https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/fanqieshasithumb.jpeg)
 
 上图是在 2018 年初写的，当时是想尝试下实现抖音这种无限上画的流畅播放体验。花了几个下午完成的。
 

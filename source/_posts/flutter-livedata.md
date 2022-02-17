@@ -3,6 +3,7 @@ title: 在 Flutter 中简单实现 LiveData
 date: 2019-9-11 16:09:25
 tags: flutter
 cover: https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/flutter_livedata.png
+top: 9
 ---
 
 # 在 Flutter 中简单实现 LiveData
