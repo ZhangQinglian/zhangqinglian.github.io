@@ -226,6 +226,170 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://zqlxtt.cn/2017/11/17/GIF-and-LWZ/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="Hari Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DAYS">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2017/11/17/GIF-and-LWZ/" class="post-title-link" itemprop="url">GIF and LWZ</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-11-17 16:42:56" itemprop="dateCreated datePublished" datetime="2017-11-17T16:42:56+00:00">2017-11-17</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-04-16 14:05:58" itemprop="dateModified" datetime="2022-04-16T14:05:58+00:00">2022-04-16</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>在讲 LZW 在 GIF 中的应用前，有必要先简单的过一下 LZW 算法。</p>
+<blockquote>
+<p>LZW算法又叫“串表压缩算法”就是通过建立一个字符串表，用较短的代码来表示较长的字符串来实现压缩。 LZW压缩算法是Unisys的专利，有效期到2003年，所以对它的使用已经没有限制了</p>
+</blockquote>
+<p>在上面的介绍中，关键在于<code>字符串表</code>这一概念，为了简单理解，我举一个例子（此例子并不是完全使用的 LWZ 算法，但思想是一致的）。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/11/17/GIF-and-LWZ/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://zqlxtt.cn/2017/11/15/gif-bytes-format/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.jpg">
+      <meta itemprop="name" content="Hari Zhang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DAYS">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2017/11/15/gif-bytes-format/" class="post-title-link" itemprop="url">GIF 字节格式解析</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-11-15 09:38:53" itemprop="dateCreated datePublished" datetime="2017-11-15T09:38:53+00:00">2017-11-15</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2022-04-16 14:05:58" itemprop="dateModified" datetime="2022-04-16T14:05:58+00:00">2022-04-16</time>
+      </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>最近花了点时间用 C++ 写了一个 GIF 图片的解析程序，在这一过程中我找了许多中文相关的材料，但没有哪一篇是真正能够让读者完全理解 GIF 的文件格式和 LZW 在 GIF 中的应用（解析部分）。在查阅了一些官方文档后我算是顺利的将程序完成了，顺道我就把 GIF 文件的解析在这儿讲讲清除，方便大家学习。</p>
+<p>下面这两个网页是我参考的比较权威的资料，大家也可以直接阅读。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="http://giflib.sourceforge.net/index.html">http://giflib.sourceforge.net/index.html</a><br><a target="_blank" rel="noopener" href="https://www.w3.org/Graphics/GIF/spec-gif89a.txt">https://www.w3.org/Graphics/GIF/spec-gif89a.txt</a></p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2017/11/15/gif-bytes-format/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://zqlxtt.cn/2017/11/03/git-intro/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -250,14 +414,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2017-11-03 19:08:22" itemprop="dateCreated datePublished" datetime="2017-11-03T19:08:22+08:00">2017-11-03</time>
+      <time title="创建时间：2017-11-03 19:08:22" itemprop="dateCreated datePublished" datetime="2017-11-03T19:08:22+00:00">2017-11-03</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-04-16 21:44:59" itemprop="dateModified" datetime="2022-04-16T21:44:59+08:00">2022-04-16</time>
+        <time title="修改时间：2022-04-16 14:05:58" itemprop="dateModified" datetime="2022-04-16T14:05:58+00:00">2022-04-16</time>
       </span>
 
   
@@ -333,14 +497,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2017-06-12 19:11:44" itemprop="dateCreated datePublished" datetime="2017-06-12T19:11:44+08:00">2017-06-12</time>
+      <time title="创建时间：2017-06-12 19:11:44" itemprop="dateCreated datePublished" datetime="2017-06-12T19:11:44+00:00">2017-06-12</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-04-16 21:44:59" itemprop="dateModified" datetime="2022-04-16T21:44:59+08:00">2022-04-16</time>
+        <time title="修改时间：2022-04-16 14:05:58" itemprop="dateModified" datetime="2022-04-16T14:05:58+00:00">2022-04-16</time>
       </span>
 
   
@@ -411,14 +575,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2017-05-23 19:38:44" itemprop="dateCreated datePublished" datetime="2017-05-23T19:38:44+08:00">2017-05-23</time>
+      <time title="创建时间：2017-05-23 19:38:44" itemprop="dateCreated datePublished" datetime="2017-05-23T19:38:44+00:00">2017-05-23</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-04-16 21:44:59" itemprop="dateModified" datetime="2022-04-16T21:44:59+08:00">2022-04-16</time>
+        <time title="修改时间：2022-04-16 14:05:58" itemprop="dateModified" datetime="2022-04-16T14:05:58+00:00">2022-04-16</time>
       </span>
 
   
@@ -492,14 +656,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2017-05-22 17:52:27" itemprop="dateCreated datePublished" datetime="2017-05-22T17:52:27+08:00">2017-05-22</time>
+      <time title="创建时间：2017-05-22 17:52:27" itemprop="dateCreated datePublished" datetime="2017-05-22T17:52:27+00:00">2017-05-22</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-04-16 21:44:59" itemprop="dateModified" datetime="2022-04-16T21:44:59+08:00">2022-04-16</time>
+        <time title="修改时间：2022-04-16 14:05:58" itemprop="dateModified" datetime="2022-04-16T14:05:58+00:00">2022-04-16</time>
       </span>
 
   
@@ -577,14 +741,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2017-05-22 10:54:25" itemprop="dateCreated datePublished" datetime="2017-05-22T10:54:25+08:00">2017-05-22</time>
+      <time title="创建时间：2017-05-22 10:54:25" itemprop="dateCreated datePublished" datetime="2017-05-22T10:54:25+00:00">2017-05-22</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-04-16 21:44:59" itemprop="dateModified" datetime="2022-04-16T21:44:59+08:00">2022-04-16</time>
+        <time title="修改时间：2022-04-16 14:05:58" itemprop="dateModified" datetime="2022-04-16T14:05:58+00:00">2022-04-16</time>
       </span>
 
   
@@ -656,14 +820,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2017-05-21 15:12:01" itemprop="dateCreated datePublished" datetime="2017-05-21T15:12:01+08:00">2017-05-21</time>
+      <time title="创建时间：2017-05-21 15:12:01" itemprop="dateCreated datePublished" datetime="2017-05-21T15:12:01+00:00">2017-05-21</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-04-16 21:44:59" itemprop="dateModified" datetime="2022-04-16T21:44:59+08:00">2022-04-16</time>
+        <time title="修改时间：2022-04-16 14:05:58" itemprop="dateModified" datetime="2022-04-16T14:05:58+00:00">2022-04-16</time>
       </span>
 
   
@@ -735,14 +899,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2017-05-19 17:07:10" itemprop="dateCreated datePublished" datetime="2017-05-19T17:07:10+08:00">2017-05-19</time>
+      <time title="创建时间：2017-05-19 17:07:10" itemprop="dateCreated datePublished" datetime="2017-05-19T17:07:10+00:00">2017-05-19</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-04-16 21:44:59" itemprop="dateModified" datetime="2022-04-16T21:44:59+08:00">2022-04-16</time>
+        <time title="修改时间：2022-04-16 14:05:58" itemprop="dateModified" datetime="2022-04-16T14:05:58+00:00">2022-04-16</time>
       </span>
 
   
@@ -762,88 +926,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/05/19/android-arch-lifecycle/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://zqlxtt.cn/2016/08/17/dart-thread-model/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/img/avatar.jpg">
-      <meta itemprop="name" content="Hari Zhang">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="DAYS">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2016/08/17/dart-thread-model/" class="post-title-link" itemprop="url">Dart与消息循环机制[翻译]</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2016-08-17 09:29:52" itemprop="dateCreated datePublished" datetime="2016-08-17T09:29:52+08:00">2016-08-17</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-04-16 21:44:59" itemprop="dateModified" datetime="2022-04-16T21:44:59+08:00">2022-04-16</time>
-      </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-379516c69166cc82.webp" alt="dart"></p>
-<p><em>翻译自<a target="_blank" rel="noopener" href="https://www.dartlang.org/articles/event-loop/">https://www.dartlang.org/articles/event-loop/</a></em></p>
-<p>异步任务在Dart中随处可见，例如许多库的方法调用都会返回Future对象来实现异步处理，我们也可以注册Handler来响应一些事件，如：鼠标点击事件，I/O流结束和定时器到期。</p>
-<p>这篇文章主要介绍了Dart中与异步任务相关的消息循环机制，阅读完这篇文章后相信你可写出更赞的异步执行代码。你也能学习到如何调度Future任务并且预测他们的执行顺序。</p>
-<p>在阅读这篇文章之前，你最好先要了解一下基本的<a target="_blank" rel="noopener" href="https://www.dartlang.org/articles/using-future-based-apis/">Future用法</a>。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2016/08/17/dart-thread-model/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -898,14 +980,14 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2016-08-12 09:38:17" itemprop="dateCreated datePublished" datetime="2016-08-12T09:38:17+08:00">2016-08-12</time>
+      <time title="创建时间：2016-08-12 09:38:17" itemprop="dateCreated datePublished" datetime="2016-08-12T09:38:17+00:00">2016-08-12</time>
     </span>
       <span class="post-meta-item">
         <span class="post-meta-item-icon">
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-04-16 21:44:59" itemprop="dateModified" datetime="2022-04-16T21:44:59+08:00">2022-04-16</time>
+        <time title="修改时间：2022-04-16 14:05:58" itemprop="dateModified" datetime="2022-04-16T14:05:58+00:00">2022-04-16</time>
       </span>
 
   
@@ -930,78 +1012,6 @@
             </div>
           <!--/noindex-->
         
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://zqlxtt.cn/2016/08/06/xiangsuhua20160806/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/img/avatar.jpg">
-      <meta itemprop="name" content="Hari Zhang">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="DAYS">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2016/08/06/xiangsuhua20160806/" class="post-title-link" itemprop="url">像素风</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2016-08-06 21:02:26" itemprop="dateCreated datePublished" datetime="2016-08-06T21:02:26+08:00">2016-08-06</time>
-    </span>
-      <span class="post-meta-item">
-        <span class="post-meta-item-icon">
-          <i class="far fa-calendar-check"></i>
-        </span>
-        <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2022-04-16 21:44:59" itemprop="dateModified" datetime="2022-04-16T21:44:59+08:00">2022-04-16</time>
-      </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>这是Tumblr上一个名为1041uuu的插画师绘制的像素画。这些作品经过像素处理后，好像一下回到“任天堂”“红白机”的年代，在“魂斗罗”里过关斩将，在“超级玛丽”中狂吃蘑菇。</p>
-<p><img src="http://cdn.zqlxtt.cn/xiangsu1.gif" alt=""><br><img src="http://cdn.zqlxtt.cn/xiangsu2.gif" alt=""><br><img src="http://cdn.zqlxtt.cn.cn/xiangsu3.gif" alt=""><br><img src="http://cdn.zqlxtt.cn/xiangsu4.gif" alt=""><br><img src="http://cdn.zqlxtt.cn/xiangsu5.gif" alt=""><br><img src="http://cdn.zqlxtt.cn/xiangsu6.gif" alt=""><br><img src="http://cdn.zqlxtt.cn/xiangsu7.gif" alt=""><br><img src="http://cdn.zqlxtt.cn/xiangsu8.gif" alt=""><br><img src="http://cdn.zqlxtt.cn/xiangsu9.gif" alt=""></p>
-
       
     </div>
 
