@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zqlxtt.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="首先介绍一下DiyCode，它的地址是https:&#x2F;&#x2F;www.diycode.cc&#x2F;，是一个致力于构建开发工程师高端交流分享社区。它的后台 API 是开放出来的，恰好有段时间我也想用 Kotlin 写一个 App 练练手，所以就有了接下来的事。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊聊给DiyCode写第三方App的事">
+<meta property="og:url" content="https://zqlxtt.cn/2017/06/12/diy-code/index.html">
+<meta property="og:site_name" content="川陀知识库">
+<meta property="og:description" content="首先介绍一下DiyCode，它的地址是https:&#x2F;&#x2F;www.diycode.cc&#x2F;，是一个致力于构建开发工程师高端交流分享社区。它的后台 API 是开放出来的，恰好有段时间我也想用 Kotlin 写一个 App 练练手，所以就有了接下来的事。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-6b41628dadbf72b1.webp">
+<meta property="article:published_time" content="2017-06-12T11:11:44.000Z">
+<meta property="article:modified_time" content="2024-08-21T03:16:19.783Z">
+<meta property="article:author" content="BLESS">
+<meta property="article:tag" content="android">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-6b41628dadbf72b1.webp">
+
+
+<link rel="canonical" href="https://zqlxtt.cn/2017/06/12/diy-code/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zqlxtt.cn/2017/06/12/diy-code/","path":"2017/06/12/diy-code/","title":"聊聊给DiyCode写第三方App的事"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>聊聊给DiyCode写第三方App的事 | 川陀知识库</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">川陀知识库</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">清风不识字何故乱翻书</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%99%E4%BA%8B%E6%88%91%E5%88%B0%E5%BA%95%E8%A1%8C%E4%B8%8D%E8%A1%8C%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">这事我到底行不行？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%91%E8%83%BD%E5%81%9A%E5%95%A5%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">我能做啥？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%91%E6%83%B3%E5%81%9A%E5%95%A5%EF%BC%9F"><span class="nav-number">3.</span> <span class="nav-text">我想做啥？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A5%E6%AD%A5%E4%B8%BA%E8%90%A5%EF%BC%8C%E6%9C%89%E5%9D%91%E5%A1%AB%E5%9D%91"><span class="nav-number">4.</span> <span class="nav-text">步步为营，有坑填坑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A7%81%E6%9C%89%E4%BF%A1%E6%81%AF%E5%AF%B9%E5%85%AC%E5%B1%8F%E8%94%BD"><span class="nav-number">4.1.</span> <span class="nav-text">私有信息对公屏蔽</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UI-%E8%AF%A5%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1%EF%BC%9F"><span class="nav-number">4.2.</span> <span class="nav-text">UI 该如何设计？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#App-%E6%9E%B6%E6%9E%84"><span class="nav-number">4.3.</span> <span class="nav-text">App 架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6%E7%9A%84%E9%80%89%E6%8B%A9"><span class="nav-number">4.4.</span> <span class="nav-text">开源框架的选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E6%8A%80%E6%9C%AF"><span class="nav-number">4.5.</span> <span class="nav-text">其他技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9D%91"><span class="nav-number">4.6.</span> <span class="nav-text">坑</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1"><span class="nav-number">4.6.1.</span> <span class="nav-text">1.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2"><span class="nav-number">4.6.2.</span> <span class="nav-text">2.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3"><span class="nav-number">4.6.3.</span> <span class="nav-text">3.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4"><span class="nav-number">4.6.4.</span> <span class="nav-text">4.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5"><span class="nav-number">4.6.5.</span> <span class="nav-text">5.</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6"><span class="nav-number">4.6.6.</span> <span class="nav-text">6.</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E6%88%90"><span class="nav-number">5.</span> <span class="nav-text">完成</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">BLESS</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zqlxtt.cn/2017/06/12/diy-code/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="BLESS">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="川陀知识库">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="聊聊给DiyCode写第三方App的事 | 川陀知识库">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          聊聊给DiyCode写第三方App的事
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-06-12 19:11:44" itemprop="dateCreated datePublished" datetime="2017-06-12T19:11:44+08:00">2017-06-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-08-21 11:16:19" itemprop="dateModified" datetime="2024-08-21T11:16:19+08:00">2024-08-21</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>首先介绍一下<code>DiyCode</code>，它的地址是<a target="_blank" rel="noopener" href="https://www.diycode.cc/">https://www.diycode.cc/</a>，是一个<strong>致力于构建开发工程师高端交流分享社区。</strong>它的后台 API 是开放出来的，恰好有段时间我也想用 Kotlin 写一个 App 练练手，所以就有了接下来的事。</p>
+<span id="more"></span>
+<h2 id="这事我到底行不行？"><a href="#这事我到底行不行？" class="headerlink" title="这事我到底行不行？"></a>这事我到底行不行？</h2><p>在上家公司，Leader 总挂在嘴边的一句话是“是男人就别说不行”。话虽如此，但做一件事之前最好还是有一个自我评估，在给 DiyCode 写 App 这件事上需要评估的就是我所掌握的能否将所有需求都实现？但再一想，现在社区类的 App 比比皆是，技术上应该没啥问题，不懂就 Google 呗。</p>
+<h2 id="我能做啥？"><a href="#我能做啥？" class="headerlink" title="我能做啥？"></a>我能做啥？</h2><p>我能做啥？这个还需要看 API 给我们提供了哪些接口，API 地址如下 <a target="_blank" rel="noopener" href="https://www.diycode.cc/api">https://www.diycode.cc/api</a>。大体能做的我整理了下：</p>
+<ul>
+<li>用户登录</li>
+<li>话题的创建、查询、点赞、收藏、关注、回复</li>
+<li>通知的查询、读取</li>
+<li>对用户的相关操作如：关注用户、查看我关注的用户和被关注的用户等</li>
+<li>项目、News的创建、查询、回复等</li>
+</ul>
+<p>可以说绝大部分功能对应的 API 都有了，这时候心里就要有点数了，我的 App 要去实现哪些功能</p>
+<h2 id="我想做啥？"><a href="#我想做啥？" class="headerlink" title="我想做啥？"></a>我想做啥？</h2><p>在知道了 API 给的接口后，就需要选定一些在 APP 中需要实现的功能，以下是我的选择：</p>
+<ul>
+<li>登录、退出</li>
+<li>主题的查看、回复、收藏、点赞和关注</li>
+<li>查看用户个人资料</li>
+<li>查看通知</li>
+<li>个人中心、我关注的人、关注我的人、我收藏的文章</li>
+</ul>
+<h2 id="步步为营，有坑填坑"><a href="#步步为营，有坑填坑" class="headerlink" title="步步为营，有坑填坑"></a>步步为营，有坑填坑</h2><h3 id="私有信息对公屏蔽"><a href="#私有信息对公屏蔽" class="headerlink" title="私有信息对公屏蔽"></a>私有信息对公屏蔽</h3><p>由于用户的登录需要 client_id 和 client_secret来申请token，如果把这两个信息直接放入源码中，那会引来熊孩子的搞破坏，所以这里选择一个比较大众的放发，就是将这两个信息放在 local.properties 文件中，.gitignore 通常会忽略这个文件。接着在 build.gradle 的 defaultConfig 块中加入如下配置：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">buildConfigField <span class="string">&quot;String&quot;</span>,<span class="string">&quot;CLIENT_ID&quot;</span>,<span class="string">&quot;\&quot;&quot;</span> + properties.get(<span class="string">&quot;client_id&quot;</span>,<span class="string">&quot;null&quot;</span>) + <span class="string">&quot;\&quot;&quot;</span></span><br><span class="line">buildConfigField <span class="string">&quot;String&quot;</span>,<span class="string">&quot;CLIENT_SECRET&quot;</span>,<span class="string">&quot;\&quot;&quot;</span> + properties.get(<span class="string">&quot;client_secret&quot;</span>,<span class="string">&quot;null&quot;</span>) + <span class="string">&quot;\&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>然后就可以在项目中使用 BuildConfig 这个动态生成的类来访问这两个变量了，不用担心提交 Github 的时候会把一些私有信息提交上去。</p>
+<h3 id="UI-该如何设计？"><a href="#UI-该如何设计？" class="headerlink" title="UI 该如何设计？"></a>UI 该如何设计？</h3><p>作为一名 Android 程序员，如果想自己画交互设计出 UI 设计文档，那此人也算神人了。根据我的经验，作为一名程序员在 UI 设计上别太有自己的想法，80%肯定都是不符合设计规范的。所以呢，还是要参考一些其他设计规范。好在 Google 自 Android 5.0 就推出了 Material Design 的设计规范并给出了相应的 Android 组件，我们大可从简，遵循少即是多的原则来设计 App 的 UI。</p>
+<p>我个人比较欣赏 Bilibili 客户端和知乎等客户端，打开 App，浓浓的 Material Design 设计味道那是深得我心。不废话，说白了就是程序猿好好写代码，UI 参考一些现成的规范即可。</p>
+<h3 id="App-架构"><a href="#App-架构" class="headerlink" title="App 架构"></a>App 架构</h3><p>此处说架构有些装逼了，其实就是怎么分层。目前流行的分层方法无外乎那几种，只要挑选自己觉得可以的就行。在这个 App 中我的选择是 MVP。</p>
+<h3 id="开源框架的选择"><a href="#开源框架的选择" class="headerlink" title="开源框架的选择"></a>开源框架的选择</h3><p>下面我简单列举一下在这个 App 中用到的开源开源框架：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/hdodenhof/CircleImageView">CircleImageView</a> : 圆形 ImageView</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/square/picasso">Picasso</a> : 图片下载及缓存</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/square/okhttp">OkHttp</a> : Http Client</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/tiagohm/MarkdownView">MarkdownView</a> : 用于显示 MarkDown 的视图</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/florent37/MaterialTextField">MaterialTextField</a> : 登录用的输入框</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/chrisbanes/PhotoView">PhotoView</a> : 显示图片，可手势放大缩小</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Karumi/Dexter">Dexter</a> : Runtime Permission 相关</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/square/retrofit">Retrofit</a> : Http Client</li>
+</ul>
+<p>大概就是这些个，如有新的后续补充。</p>
+<h3 id="其他技术"><a href="#其他技术" class="headerlink" title="其他技术"></a>其他技术</h3><p>这个 App 代码部分用 Kotlin 完成，视图的数据填充使用 Databinding 。</p>
+<h3 id="坑"><a href="#坑" class="headerlink" title="坑"></a>坑</h3><h4 id="1"><a href="#1" class="headerlink" title="1."></a>1.</h4><p>由于使用了 Kotlin，直接使用 Databinding 会出错，需要在 build.gradle 中添加依赖：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kapt <span class="string">&quot;com.android.databinding:compiler:2.3.3&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>以及插件：</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apply <span class="attr">plugin:</span> <span class="string">&#x27;kotlin-kapt&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>只有这样 Databinding 才能正常工作。</p>
+<h4 id="2"><a href="#2" class="headerlink" title="2."></a>2.</h4><p>在使用 Retrofit 和 converter-gson 配合获取数据时，对应的实体类应该定义成如下样子：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="keyword">class</span> <span class="title class_">Token</span></span><br><span class="line">(</span><br><span class="line">        <span class="meta">@SerializedName(<span class="string">&quot;access_token&quot;</span>)</span> <span class="keyword">val</span> accessToken: String,</span><br><span class="line">        <span class="meta">@SerializedName(<span class="string">&quot;token_type&quot;</span>)</span> <span class="keyword">val</span> tokenType: String,</span><br><span class="line">        <span class="meta">@SerializedName(<span class="string">&quot;expires_in&quot;</span>)</span> <span class="keyword">val</span> expiresIn: String,</span><br><span class="line">        <span class="meta">@SerializedName(<span class="string">&quot;refresh_token&quot;</span>)</span> <span class="keyword">val</span> refreshToken: String,</span><br><span class="line">        <span class="meta">@SerializedName(<span class="string">&quot;created_at&quot;</span>)</span> <span class="keyword">val</span> createdAt: String</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>使用 kotlin 的数据类保存数据应该是十分明智的选择，应为就只凭它重写的 toString 方法来输出所有字段就大大降低了我在调试时候的工作量。</p>
+<h4 id="3"><a href="#3" class="headerlink" title="3."></a>3.</h4><p>由于此 App 涉及到用户登录的问题，那就肯定会涉及到请求中添加 token 信息的问题，这里应为用的是 Retrofit ，由于它底下用的也是 Okhttp，所以就自然可以选择 OkHttp 的拦截器 Interceptor。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> interceptor: Interceptor = <span class="keyword">object</span> : Interceptor &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">intercept</span><span class="params">(chain: <span class="type">Interceptor</span>.<span class="type">Chain</span>?)</span></span>: Response &#123;</span><br><span class="line">        <span class="keyword">var</span> originRequest = chain!!.request()</span><br><span class="line">        <span class="keyword">if</span> (originRequest.url().toString().contains(DiyCodeContract.kOAuthUrl)) &#123;</span><br><span class="line">              <span class="keyword">return</span> chain.proceed(originRequest)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (originRequest.headers()[<span class="string">&quot;Authorization&quot;</span>] != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> chain.proceed(originRequest)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (mCallback!!.getToken() == <span class="literal">null</span> || mCallback!!.getToken()?.length == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> chain.proceed(originRequest)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> newRequest = originRequest.</span><br><span class="line">                newBuilder().</span><br><span class="line">                addHeader(<span class="string">&quot;Authorization&quot;</span>, <span class="string">&quot;Bearer &quot;</span> + mCallback!!.getToken()).</span><br><span class="line">                build()</span><br><span class="line">        <span class="keyword">return</span> chain.proceed(newRequest)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> okHttpClient: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> retrofit = Retrofit.Builder()</span><br><span class="line">        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())</span><br><span class="line">        .addConverterFactory(GsonConverterFactory.create())</span><br><span class="line">        .baseUrl(DiyCodeContract.kDiyCodeApi)</span><br><span class="line">        .client(okHttpClient)</span><br><span class="line">        .build()</span><br></pre></td></tr></table></figure>
+
+<h4 id="4"><a href="#4" class="headerlink" title="4."></a>4.</h4><p>Markdown 正文中的图片，连接的点击问题，这个问题其实比较简单，应为在使用的开源框架 MarkdownView 中就提供了如下接口：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">OnElementListener</span> &#123;</span><br><span class="line">    void onButtonTap(String var1);</span><br><span class="line"></span><br><span class="line">    void onCodeTap(String var1, String var2);</span><br><span class="line"></span><br><span class="line">    void onHeadingTap(int var1, String var2);</span><br><span class="line"></span><br><span class="line">    void onImageTap(String var1, int var2, int var3);</span><br><span class="line"></span><br><span class="line">    void onLinkTap(String var1, String var2);</span><br><span class="line"></span><br><span class="line">    void onKeystrokeTap(String var1);</span><br><span class="line"></span><br><span class="line">    void onMarkTap(String var1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>图片的单独显示，连接的跳转都可以在此处做处理。</p>
+<h4 id="5"><a href="#5" class="headerlink" title="5."></a>5.</h4><p>这里有个略微复杂的问题，由于在话题详情页下方会有评论列表，返回的评论数据有两种格式，markdown 和 html，本来我想有 markdown 不就足够了吗？评论同样采用 MarkdownView ，分分钟搞定。但万万没想到，这个 MarkdownView 是继承自 WebView，试想一下，一个列表里全是 WebView 在那滑动，界面会卡成啥样。<br>所以只能退而求其次选择使用 TextView 来显示 html。此方法本来也不难，一句话就搞定了，</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">binding.markdownView.text = Html.fromHtml(topicReply.bodyHtml)</span><br></pre></td></tr></table></figure>
+<p>但问题来了，有些评论里带链接，有些是@他人的，有些是带图片的，这里的三个元素都需要做处理。链接如果是指向某一个话题的，应该直接在应用内跳转到该话题而不是用浏览器打开对应页面。点@他人的文字，应该跳转到被@人的个人资料页。点击图片可以进入图片查看页，进行方法和缩小。</p>
+<p>这里的前两个问题都可以使用 ClickableSpan 进行处理，而 TextView 显示图片本身就是一个问题，上面的 Html.fromHtml 其实还提供了一个接口：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> static Spanned fromHtml(String source, int flags, Html.ImageGetter imageGetter, Html.TagHandler tagHandler) </span><br></pre></td></tr></table></figure>
+
+<p>注意这里的 ImageGetter，使用它就能 html 中的 <img> 标签进行处理。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ImageGetter</span> &#123;</span><br><span class="line">     Drawable getDrawable(String var1);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>但这个接口怎么看也是一个同步的方法，而加载网络图片大家都知道这是一个异步的操作，所以我们还要做一下进一步的继承和封装处理：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">URLDrawable</span> : <span class="type">BitmapDrawable</span>() &#123;</span><br><span class="line">    <span class="keyword">var</span> drawable: Drawable? = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">draw</span><span class="params">(canvas: <span class="type">Canvas</span>)</span></span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (drawable != <span class="literal">null</span>) &#123;</span><br><span class="line">            drawable!!.draw(canvas)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">URLImageParser</span>(<span class="keyword">internal</span> <span class="keyword">var</span> container: View, <span class="keyword">internal</span> <span class="keyword">var</span> c: Context) : ImageGetter &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">getDrawable</span><span class="params">(source: <span class="type">String</span>)</span></span>: Drawable &#123;</span><br><span class="line">        <span class="keyword">val</span> urlDrawable = URLDrawable()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">val</span> asyncTask = ImageGetterAsyncTask(urlDrawable)</span><br><span class="line"></span><br><span class="line">        asyncTask.execute(source)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> urlDrawable</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">inner</span> <span class="keyword">class</span> <span class="title class_">ImageGetterAsyncTask</span>(<span class="keyword">internal</span> <span class="keyword">var</span> urlDrawable: URLDrawable) : AsyncTask&lt;String, <span class="built_in">Void</span>, Drawable&gt;() &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">doInBackground</span><span class="params">(<span class="keyword">vararg</span> params: <span class="type">String</span>)</span></span>: Drawable? &#123;</span><br><span class="line">            <span class="keyword">val</span> source = params[<span class="number">0</span>]</span><br><span class="line">            <span class="keyword">return</span> fetchDrawable(source)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onPostExecute</span><span class="params">(result: <span class="type">Drawable</span>?)</span></span> &#123;</span><br><span class="line">            <span class="keyword">if</span>(result == <span class="literal">null</span>) <span class="keyword">return</span></span><br><span class="line">            urlDrawable.setBounds(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span> + result.intrinsicWidth, <span class="number">0</span> + result.intrinsicHeight)</span><br><span class="line"></span><br><span class="line">            urlDrawable.drawable = result</span><br><span class="line"></span><br><span class="line">            <span class="keyword">val</span> textview = <span class="keyword">this</span><span class="symbol">@URLImageParser</span>.container <span class="keyword">as</span> TextView</span><br><span class="line">            textview.text = textview.text</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">fun</span> <span class="title">fetchDrawable</span><span class="params">(urlString: <span class="type">String</span>)</span></span>: Drawable? &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">val</span> `<span class="keyword">is</span>` = fetch(urlString)</span><br><span class="line">                <span class="keyword">val</span> drawable = Drawable.createFromStream(`<span class="keyword">is</span>`, <span class="string">&quot;src&quot;</span>)</span><br><span class="line">                drawable.setBounds(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span> + drawable.intrinsicWidth, <span class="number">0</span> + drawable.intrinsicHeight)</span><br><span class="line">                <span class="keyword">return</span> drawable</span><br><span class="line">            &#125; <span class="keyword">catch</span> (e: Exception) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">null</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Throws(MalformedURLException::class, IOException::class)</span></span><br><span class="line">        <span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">fetch</span><span class="params">(urlString: <span class="type">String</span>)</span></span>: InputStream &#123;</span><br><span class="line">            <span class="keyword">val</span> url = URL(urlString)</span><br><span class="line">            <span class="keyword">val</span> connection = url.openConnection()</span><br><span class="line">            <span class="keyword">val</span> inputStream = BufferedInputStream(connection.getInputStream())</span><br><span class="line">            <span class="keyword">return</span> inputStream</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里的思路比较清晰，首先实现 ImageGetter 类，返回一个我们自定义的 URLDrawable 对象。然后使用 AsyncTask 加载网络图片，加载完成后将图片设置到 URLDrawable 内部，并对 TextView 做一次重新赋值的操作，让其进行一次刷新来显示我们异步加载的图片。</p>
+<h4 id="6"><a href="#6" class="headerlink" title="6."></a>6.</h4><p>在使用 Kotlin 的过程中如果还遵循 Java 的那套编码习惯，恐怕写出来的代码不比 Java 的简单到哪里去，既然使用了 Kotlin，就要将其特性都用上。</p>
+<p>首先要说的就是它自带的 lambda 表达式，用起来确实省事。就拿设置 Button 的响应事件来讲，java 的如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">button.setOnClickListener(<span class="keyword">new</span> <span class="title class_">View</span>.OnClickListener() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onClick</span><span class="params">(View v)</span> &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>在 Kotlin 中：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> button.setOnClickListener &#123; </span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>是不是简单了很多，还有另外值得一提的就是我们要利用好 Kotlin 的 Extensions 这个特性，这样可以是代码更具可读性，下面举个简单的例子，比如我们通常使用的 SharedPreference 的时候有时候会忘记最后的 commit 或者 apply 操作。传统的代码写法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">SharedPreferences</span> <span class="variable">sharedPreferences</span> <span class="operator">=</span> getContext().getSharedPreferences(<span class="string">&quot;text&quot;</span>,Context.MODE_PRIVATE);</span><br><span class="line">sharedPreferences.edit().putBoolean(<span class="string">&quot;b1&quot;</span>,<span class="literal">true</span>).putString(<span class="string">&quot;str&quot;</span>,<span class="string">&quot;foo&quot;</span>).putLong(<span class="string">&quot;l1&quot;</span>,<span class="number">1L</span>).apply();</span><br></pre></td></tr></table></figure>
+
+<p>但如果在 Kotlin 中结合了 Extensions 特性，则写法相当风骚。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> sharedPreference  = context.getSharedPreferences(<span class="string">&quot;test&quot;</span>,Context.MODE_PRIVATE)</span><br><span class="line">sharedPreference.save &#123;</span><br><span class="line">    putBoolean(<span class="string">&quot;b1&quot;</span>,<span class="literal">true</span>)</span><br><span class="line">    putString(<span class="string">&quot;str1&quot;</span>,<span class="string">&quot;foo&quot;</span>)</span><br><span class="line">    putLong(<span class="string">&quot;l1&quot;</span>,<span class="number">1L</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>首先看这里，apply没有了，并且 putBoolean 这些操作前也没有了相应的对象。更神奇的是这里的 save 方法，SharedPreferences 应该没有这个方法的。其实这一切都是 Extensions 的功劳，我没看一下隐藏在上面代码背后的几行代码：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> SharedPreferences.<span class="title">save</span><span class="params">(func: <span class="type">SharedPreferences</span>.<span class="type">Editor</span>.()-&gt;<span class="type">Unit</span>)</span></span>&#123;</span><br><span class="line">    <span class="keyword">val</span> edit = edit()</span><br><span class="line">    edit.func()</span><br><span class="line">    edit.apply()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述代码首先给 SharedPreferences 扩展了一个 save 方法，然后在扩展方法里做了 Editor 的初始化和最后的 apply 工作。只要在项目中的一处地方给出定义，其他地方都能使用。是不是很方便？</p>
+<h2 id="完成"><a href="#完成" class="headerlink" title="完成"></a>完成</h2><p>下面是 App 的部分截图，</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-6b41628dadbf72b1.webp" alt="image"></p>
+<p>源码在我的github上，分别是 dclib 和 dcapp，我的 github 地址：<a target="_blank" rel="noopener" href="https://github.com/ZhangQinglian">https://github.com/ZhangQinglian</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/android/" rel="tag"># android</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/05/23/android-arch-intro/" rel="prev" title="Android官方架构组件指南[翻译]">
+                  <i class="fa fa-angle-left"></i> Android官方架构组件指南[翻译]
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/11/03/git-intro/" rel="next" title="GIF 字节格式介绍">
+                  GIF 字节格式介绍 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">BLESS</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"scale":1,"hHeadPos":0.5,"vHeadPos":0.618,"jsonPath":"/live2dw/assets/assets/tororo.model.json"},"display":{"superSample":2,"width":150,"height":300,"position":"left","hOffset":0,"vOffset":-20},"mobile":{"show":true,"scale":0.5},"react":{"opacityDefault":0.7,"opacityOnHover":0.2},"archive_generator":{"per_page":0,"yearly":false,"monthly":false,"daily":false},"log":false});</script></body>
+</html>

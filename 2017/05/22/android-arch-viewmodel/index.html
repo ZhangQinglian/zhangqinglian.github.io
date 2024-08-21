@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zqlxtt.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="ViewModel像Activity，Fragment这类应用组件都有自己的生命周期并且是被Android的Framework所管理的。Framework可能会根据用户的一些操作和设备的状态对Activity或者Fragment进行销毁和重构。作为开发者，这些行为我们是无法干预的。 所以Activity或Fragment中的一些数据也会随着销毁而丢失，随着重构而重新生成。比如你的Activity中">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android官方架构组件介绍之ViewModel[翻译]">
+<meta property="og:url" content="https://zqlxtt.cn/2017/05/22/android-arch-viewmodel/index.html">
+<meta property="og:site_name" content="川陀知识库">
+<meta property="og:description" content="ViewModel像Activity，Fragment这类应用组件都有自己的生命周期并且是被Android的Framework所管理的。Framework可能会根据用户的一些操作和设备的状态对Activity或者Fragment进行销毁和重构。作为开发者，这些行为我们是无法干预的。 所以Activity或Fragment中的一些数据也会随着销毁而丢失，随着重构而重新生成。比如你的Activity中">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://backup.flutter-dev.cn/viewmodel-lifecycle.png">
+<meta property="article:published_time" content="2017-05-22T02:54:25.000Z">
+<meta property="article:modified_time" content="2024-08-21T03:16:19.781Z">
+<meta property="article:author" content="BLESS">
+<meta property="article:tag" content="android">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://backup.flutter-dev.cn/viewmodel-lifecycle.png">
+
+
+<link rel="canonical" href="https://zqlxtt.cn/2017/05/22/android-arch-viewmodel/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zqlxtt.cn/2017/05/22/android-arch-viewmodel/","path":"2017/05/22/android-arch-viewmodel/","title":"Android官方架构组件介绍之ViewModel[翻译]"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Android官方架构组件介绍之ViewModel[翻译] | 川陀知识库</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">川陀知识库</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">清风不识字何故乱翻书</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ViewModel"><span class="nav-number">1.</span> <span class="nav-text">ViewModel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fragment%E4%B9%8B%E9%97%B4%E7%9A%84%E6%95%B0%E6%8D%AE%E5%85%B1%E4%BA%AB"><span class="nav-number">2.</span> <span class="nav-text">Fragment之间的数据共享</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ViewModel%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">3.</span> <span class="nav-text">ViewModel的生命周期</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">BLESS</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zqlxtt.cn/2017/05/22/android-arch-viewmodel/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="BLESS">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="川陀知识库">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Android官方架构组件介绍之ViewModel[翻译] | 川陀知识库">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android官方架构组件介绍之ViewModel[翻译]
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-05-22 10:54:25" itemprop="dateCreated datePublished" datetime="2017-05-22T10:54:25+08:00">2017-05-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-08-21 11:16:19" itemprop="dateModified" datetime="2024-08-21T11:16:19+08:00">2024-08-21</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="ViewModel"><a href="#ViewModel" class="headerlink" title="ViewModel"></a>ViewModel</h2><p>像Activity，Fragment这类应用组件都有自己的生命周期并且是被Android的Framework所管理的。Framework可能会根据用户的一些操作和设备的状态对Activity或者Fragment进行销毁和重构。作为开发者，这些行为我们是无法干预的。</p>
+<p>所以Activity或Fragment中的一些数据也会随着销毁而丢失，随着重构而重新生成。比如你的Activity中有个用户列表，当这个Activity重构的时候，新的Activity会重新获取用户列表。对于一些简单的数据，Activity可以使用<code>onSaveInstanceState()</code>方法，并从onCreate的bundle中重新获取。但这一方法途径仅仅适合一些简单的UI状态，对于用户列表这种庞大的数据并不适合。</p>
+<span id="more"></span>
+<p>还存在一个问题，Activity或者Fragment经常会做一些异步的耗时操作。随之就需要Activity和Fragment管理这些异步操作，并在自己被destroyed的时候清理它们，从而保证内存溢出这类问题的发生。这样的处理会随着项目扩大而变得十分复杂，一不留神，你的App就Crash了。</p>
+<p>Activity和Fragment本身需要处理很多用户的输入事件并和操作系统打交道，所以当它们还要花时间管理它们的数据资源时，class文件就会变得异常庞大，然后就会造就出所谓的<code>god activities</code>和<code>god fragments</code>。这些UI控制类仅仅靠一个class就能处理相关的所有事务。简直跟上帝没啥两样。但这些类如果要进行单元测试的话，那就尴尬了。</p>
+<p>所以就有了<code>MVC</code>,<code>MVP</code>这类设计模式，将视图与数据分离。今天讲到的<code>ViewModel</code>类的功能也一样，就是讲数据从UI中分离出来。并且当Activity或Fragment重构的时候，ViewModel会自动保留之前的数据并给新的Activity或Fragment使用。对于上面提到的用户列表的例子，ViewModel会为我们很好的管理这些数据。</p>
+<!--more-->
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyViewModel</span> <span class="keyword">extends</span> <span class="title class_">ViewModel</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> MutableLiveData&lt;List&lt;User&gt;&gt; users;</span><br><span class="line">    <span class="keyword">public</span> LiveData&lt;List&lt;User&gt;&gt; <span class="title function_">getUsers</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (users == <span class="literal">null</span>) &#123;</span><br><span class="line">            users = <span class="keyword">new</span> <span class="title class_">MutableLiveData</span>&lt;List&lt;Users&gt;&gt;();</span><br><span class="line">            loadUsers();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> users;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">loadUsers</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// do async operation to fetch users</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接着在我们的Activity中就能这样使用了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyActivity</span> <span class="keyword">extends</span> <span class="title class_">AppCompatActivity</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onCreate</span><span class="params">(Bundle savedInstanceState)</span> &#123;</span><br><span class="line">        <span class="type">MyViewModel</span> <span class="variable">model</span> <span class="operator">=</span> ViewModelProviders.of(<span class="built_in">this</span>).get(MyViewModel.class);</span><br><span class="line">        model.getUsers().observe(<span class="built_in">this</span>, users -&gt; &#123;</span><br><span class="line">            <span class="comment">// update UI</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是当MyActivity被重构时，获得到的model实例是与重构前同一个，当MyActivity被销毁时，Framework会调用ViewModel的<code>onCleared()</code>,我们就可以在此方法中做资源的清理。</p>
+<blockquote>
+<p>  因为ViewModel的生命周期是和Activity或Fragment分开的，所以在ViewModel中绝对不能引用任何View对象或者任何引用了Activity的Context的对象。如果ViewModel中需要Application的Context的话，可以继承<code>AndroidViewModel</code>。</p>
+</blockquote>
+<h2 id="Fragment之间的数据共享"><a href="#Fragment之间的数据共享" class="headerlink" title="Fragment之间的数据共享"></a>Fragment之间的数据共享</h2><p>在Activity中包好多个Fragment并且需要相互通信是非常常见的，这时就需要这些Fragment定义一些接口，然后让Activity来进行协调。而且这些Fragment还需要处理其他Fragment不可见或者还没有创建这些细节问题。</p>
+<p>上面这个动点可以被ViewModel轻易解决，想象意向有这么个Activity，它包含FragmentA和FragmentB，其中A是用户列表，B是用户的详细数据，点击列表上的某个用户，在B中显示相应的数据。</p>
+<p>看看使用ViewModel怎么处理这个问题：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SharedViewModel</span> <span class="keyword">extends</span> <span class="title class_">ViewModel</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> MutableLiveData&lt;Item&gt; selected = <span class="keyword">new</span> <span class="title class_">MutableLiveData</span>&lt;Item&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">select</span><span class="params">(Item item)</span> &#123;</span><br><span class="line">        selected.setValue(item);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> LiveData&lt;Item&gt; <span class="title function_">getSelected</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> selected;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MasterFragment</span> <span class="keyword">extends</span> <span class="title class_">Fragment</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> SharedViewModel model;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onActivityCreated</span><span class="params">()</span> &#123;</span><br><span class="line">        model = ViewModelProviders.of(getActivity()).get(SharedViewModel.class);</span><br><span class="line">        itemSelector.setOnClickListener(item -&gt; &#123;</span><br><span class="line">            model.select(item);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DetailFragment</span> <span class="keyword">extends</span> <span class="title class_">LifecycleFragment</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onActivityCreated</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">SharedViewModel</span> <span class="variable">model</span> <span class="operator">=</span> ViewModelProviders.of(getActivity()).get(SharedViewModel.class);</span><br><span class="line">        model.getSelected().observe(<span class="built_in">this</span>, &#123; item -&gt;</span><br><span class="line">           <span class="comment">// update UI</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里要注意的是两个Fragment都使用了<code>getActivity</code>作为参数来获得ViewModel实例。这表示这两个Fragment获得的ViewModel对象是同一个。</p>
+<p>使用了ViewModel的好处如下：</p>
+<ul>
+<li>Activity不需要做任何事情，不需要干涉这两个Fragment之间的通信。</li>
+<li>Fragment不需要互相知道，即使一个消失不可见，另一个也能很好的工作。</li>
+<li>Fragment有自己的生命周期，它们之间互不干扰，即便你用一个FragmentC替代了B，FragmentA也能正常工作，没有任何问题。</li>
+</ul>
+<h2 id="ViewModel的生命周期"><a href="#ViewModel的生命周期" class="headerlink" title="ViewModel的生命周期"></a>ViewModel的生命周期</h2><p>ViewModel的生命周期跟着传递给<code>ViewModelProvider</code>的<code>LifeCycle</code>走，当生成了ViewModel的实例后，它会一直待在内存中，直到对应的LifeCycle彻底结束。下面是ViewModel与Activity对应的生命周期图：</p>
+<p><img src="http://backup.flutter-dev.cn/viewmodel-lifecycle.png" alt="ViewModel生命周期"></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/android/" rel="tag"># android</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/05/21/andrdoi-arch-livedata/" rel="prev" title="Android官方架构组件介绍之LiveData[翻译]">
+                  <i class="fa fa-angle-left"></i> Android官方架构组件介绍之LiveData[翻译]
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/05/22/android-arch-room/" rel="next" title="Android官方架构组件介绍之Room[翻译]">
+                  Android官方架构组件介绍之Room[翻译] <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">BLESS</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"scale":1,"hHeadPos":0.5,"vHeadPos":0.618,"jsonPath":"/live2dw/assets/assets/tororo.model.json"},"display":{"superSample":2,"width":150,"height":300,"position":"left","hOffset":0,"vOffset":-20},"mobile":{"show":true,"scale":0.5},"react":{"opacityDefault":0.7,"opacityOnHover":0.2},"archive_generator":{"per_page":0,"yearly":false,"monthly":false,"daily":false},"log":false});</script></body>
+</html>

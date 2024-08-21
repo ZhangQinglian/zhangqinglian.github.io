@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zqlxtt.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="“直播”2020年的一场疫情将直播行业及音视频技术带到了大家的视野中，原本只在娱乐行业被人熟知的直播，在数月中就充斥了人们的整个日常生活。直播卖货、远程会议系统、直播教育原本小众的场景被强行拉上舞台，接受本不该承受的QPS。 部分数据可参考下图：  如果你是一名开发者，你有没有想过，从主播开始推流到用户看到画面，这里面都发生了些什么？一次次的卡顿缓冲时怎么引起的？观众看到的画面和主播实时画面差了几">
+<meta property="og:type" content="article">
+<meta property="og:title" content="聊聊直播移动端播放体验优化">
+<meta property="og:url" content="https://zqlxtt.cn/2020/07/13/living-optimize/index.html">
+<meta property="og:site_name" content="川陀知识库">
+<meta property="og:description" content="“直播”2020年的一场疫情将直播行业及音视频技术带到了大家的视野中，原本只在娱乐行业被人熟知的直播，在数月中就充斥了人们的整个日常生活。直播卖货、远程会议系统、直播教育原本小众的场景被强行拉上舞台，接受本不该承受的QPS。 部分数据可参考下图：  如果你是一名开发者，你有没有想过，从主播开始推流到用户看到画面，这里面都发生了些什么？一次次的卡顿缓冲时怎么引起的？观众看到的画面和主播实时画面差了几">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/100012a173b932cbb31596c11bbb41e6066cc911bf2be7099082800f3657bfa139015.jpg">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/%E7%9B%B4%E6%92%AD%E6%95%B4%E4%BD%93%E6%B5%81%E7%A8%8B.png">
+<meta property="article:published_time" content="2020-07-13T13:10:12.000Z">
+<meta property="article:modified_time" content="2024-08-21T03:16:19.786Z">
+<meta property="article:author" content="BLESS">
+<meta property="article:tag" content="直播技术">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/100012a173b932cbb31596c11bbb41e6066cc911bf2be7099082800f3657bfa139015.jpg">
+
+
+<link rel="canonical" href="https://zqlxtt.cn/2020/07/13/living-optimize/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zqlxtt.cn/2020/07/13/living-optimize/","path":"2020/07/13/living-optimize/","title":"聊聊直播移动端播放体验优化"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>聊聊直播移动端播放体验优化 | 川陀知识库</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">川陀知识库</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">清风不识字何故乱翻书</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E2%80%9C%E7%9B%B4%E6%92%AD%E2%80%9D"><span class="nav-number">1.</span> <span class="nav-text">“直播”</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E2%80%9C%E6%8E%A8%E6%B5%81%E7%AB%AF%E2%80%9D"><span class="nav-number">2.</span> <span class="nav-text">“推流端”</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E2%80%9CCDN%E2%80%9D"><span class="nav-number">3.</span> <span class="nav-text">“CDN”</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E2%80%9C%E6%8B%89%E6%B5%81%E7%AB%AF%E2%80%9D"><span class="nav-number">4.</span> <span class="nav-text">“拉流端”</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E2%80%9C%E8%BF%9B%E9%98%B6%E2%80%9D"><span class="nav-number">5.</span> <span class="nav-text">“进阶”</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%B6%E8%BF%9F"><span class="nav-number">5.1.</span> <span class="nav-text">延迟</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A6%96%E5%B8%A7"><span class="nav-number">5.2.</span> <span class="nav-text">首帧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%A1%E9%A1%BF"><span class="nav-number">5.3.</span> <span class="nav-text">卡顿</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9F%B3%E7%94%BB%E4%B8%8D%E5%90%8C%E6%AD%A5"><span class="nav-number">5.4.</span> <span class="nav-text">音画不同步</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">BLESS</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zqlxtt.cn/2020/07/13/living-optimize/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="BLESS">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="川陀知识库">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="聊聊直播移动端播放体验优化 | 川陀知识库">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          聊聊直播移动端播放体验优化
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-07-13 21:10:12" itemprop="dateCreated datePublished" datetime="2020-07-13T21:10:12+08:00">2020-07-13</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-08-21 11:16:19" itemprop="dateModified" datetime="2024-08-21T11:16:19+08:00">2024-08-21</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="“直播”"><a href="#“直播”" class="headerlink" title="“直播”"></a>“直播”</h1><p>2020年的一场疫情将直播行业及音视频技术带到了大家的视野中，原本只在娱乐行业被人熟知的直播，在数月中就充斥了人们的整个日常生活。<code>直播卖货</code>、<code>远程会议系统</code>、<code>直播教育</code>原本小众的场景被强行拉上舞台，接受本不该承受的QPS。</p>
+<p>部分数据可参考下图：</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/100012a173b932cbb31596c11bbb41e6066cc911bf2be7099082800f3657bfa139015.jpg" alt=""></p>
+<p>如果你是一名开发者，你有没有想过，从主播开始推流到用户看到画面，这里面都发生了些什么？一次次的卡顿缓冲时怎么引起的？观众看到的画面和主播实时画面差了几秒，最短能缩减到多少？不同观众看到的画面是否一致？</p>
+<p>为了大家可以直观理解本文剩余部分，这里笔者先把直播整体的流程图放出来。</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/%E7%9B%B4%E6%92%AD%E6%95%B4%E4%BD%93%E6%B5%81%E7%A8%8B.png" alt="直播整体流程"></p>
+<p>上图只是将主要的流程列出来，真正的流程比这个当然要更复杂。</p>
+<p>本文的主题是<code>直播移动端播放体验优化</code>，结合上图，笔者会从<code>推流端</code>、<code>cdn</code>和<code>拉流端</code>给大家介绍如何在这三个环节进行播放体验优化。</p>
+<p>本文会尽量写的通俗易懂，不会涉及到具体代码实现，即使你不是直播行业的开发者，读完这篇文章，也能对直播优化有个比较全面的了解。</p>
+<span id="more"></span>
+<h1 id="“推流端”"><a href="#“推流端”" class="headerlink" title="“推流端”"></a>“推流端”</h1><p>推流端是离我们观众最远的节点，也是整个直播内容的生产源头。我们熟知的推流工具有 OBS、B 站直播姬和各个直播平台的手机推流 app。另外针对一些复杂场景的话，有更专业的导播台硬件。虽然工具众多，但推流端的整个工作流程还是比较固定的：</p>
+<ol>
+<li>摄像头采集</li>
+<li>麦克风采集</li>
+<li>视频编码</li>
+<li>音频编码</li>
+<li>音视频封装合流</li>
+<li>推流</li>
+</ol>
+<p>那么回到文章主题，在推流端我们可以做哪些针对用户播放体验的优化呢？用户体验的话无非三块<code>画面首帧</code>、<code>卡顿率</code>和<code>延迟</code>。</p>
+<p>那么想想推流端的哪些行为会导致上面的这些问题？</p>
+<p>想象下，如果主播拿了一部四年前的低端手机一边玩和平精英一边直播会怎样？是不是手机本身就已经卡得不得了了？那这里就得出了第一个优化点<code>硬件</code></p>
+<blockquote>
+<p>硬件的规格参数是会直接影响推流质量，把推流比作一个武林高手的话，硬件就是这位武林高手强健的体魄，没有强健的体魄很难练出绝世的武功。</p>
+</blockquote>
+<p>除了硬件，<code>网络</code>也是一个很关键的因素，如果主播上行网络<code>带宽低</code>、<code>不稳定</code>那么用户端看到的画面质量肯定是非常糟糕的。</p>
+<p>其中带宽低我们可以采用<code>低分辨率</code>、<code>低码率</code>或高性能的编码如<code>h265</code>、<code>AAC</code>等手段降低流的码率。</p>
+<p>网络不稳定是一个比较头疼因素，因为你不知道什么时候网络会突然抖一下，或者用户是户外直播，那么移动网络的稳定性肯定是得不到保证的。大家知道推流的常用协议 <code>RTMP</code> 是基于 <code>TCP</code> 的，TCP 提供了面向连接的可靠的字节流服务。同时 TCP 又是一个老好人，不仅会帮你校验数据有没有无差错、不重复和不丢失的传输到对方，还会帮你做流量控制和拥塞控制（可参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/dangzhangjing97/article/details/81008836">https://blog.csdn.net/dangzhangjing97/article/details/81008836</a>）。这就导致在一条数据链路上 TCP 的传输可能会抢不过基于 <code>UDP</code> 服务的传输协议。<br>所以面对不稳定的网络，我们可以采用基于 UDP 且相对比较极端自私的协议，如<code>SRT</code>、<code>QUIC</code>等。这里不展开讲，感兴趣的可以去了解和学习下这两种协议。</p>
+<p>总结下推流端的优化手段：</p>
+<ol>
+<li>提高推流硬件设备规格参数。</li>
+<li>保证推流码率小于网络上行带宽。</li>
+<li>针对不稳定网络，可以采用 SRT、QUIC 等协议进行优化。</li>
+</ol>
+<h1 id="“CDN”"><a href="#“CDN”" class="headerlink" title="“CDN”"></a>“CDN”</h1><p>作为中间商的 CDN，在整个直播链路中也是扮演者非常重要的角色，往往直播的成本大头都在 CDN 带宽上。市面上一个比较靠前的直播平台，在 CDN 成本上每年的花费是超过 1 亿的。扯远了，扯远了。言归正传，CDN 与推流端连接，用于接收主播推上来的流数据，上一节讲了，推流协议可以采用 RTMP，也可以采用 SRT 或 QUIC，那么 CDN 就必须提供同样协议的推流地址，否则推流端一厢情愿使用 SRT 也是不可行的。</p>
+<p>CDN 除了要提供多样的推流协议外，另一个比较重要的因素就是边缘节点的覆盖，一般 CDN 在中国的各大城市都有分布，分布的越多，其节点对应推流端的数据链路就越通畅。很多 CDN 厂商都会配置多级边缘节点，其目的就是保证数据能更顺畅的到达流程图中的<code>源站</code>。</p>
+<p>在 CDN 保证数据链路通畅的情况下，还有哪些事可以做呢？</p>
+<p>可以看下直播流程图中的源站，他的职责中有一项是<code>转码</code>。那为什么要转码呢？主播推上来的流就不能直接给下游去用吗？当然可以不转码，直接给下游消费。但想象下，如果一个主播硬件配置极高，上行网络极好，他推了一个 20M 的流上来，源站不处理直接给观众看的话会发生什么？20M 的流用户需要稳定播放的话，需要其网速可以稳定满足 2.5M/s，这个对于目前很多用户来说是不太现实的。</p>
+<p>所以源站这里需要对源流进行转码，将高码率的流转为更低码率的流，如<code>蓝光（8M）</code>、<code>高清（4M）</code>、<code>清晰（1.5M）</code>等。这样用户可以针对自己的网络有更多的选择。</p>
+<p>另外源站在转码的时候还能根据流内容做合理的编码控制：CBR 和 VBR。</p>
+<p>总结下 CDN 在优化播放体验上可以做哪些事：</p>
+<ol>
+<li>提供完善的推流协议 RTMP、SRT 和 QUIC 等。</li>
+<li>提高 CDN 节点覆盖量。</li>
+<li>通过转码提供多码率的流供用户选择。</li>
+<li>采用合理的编码控制：CBR 和 VBR。</li>
+</ol>
+<h1 id="“拉流端”"><a href="#“拉流端”" class="headerlink" title="“拉流端”"></a>“拉流端”</h1><p>拉流端作为整个直播链路的末端消费侧，对流质量的好坏是最直观的。从流程图上可以看到拉流端做的事情是推流端的逆向，那么对推流端适用的优化手段对拉流端也是适用的。</p>
+<ol>
+<li>提高拉流硬件设备规格参数。</li>
+<li>保证拉流码率小于网络上行带宽。</li>
+<li>保证拉流网络的稳定性。</li>
+</ol>
+<p>其中 1 提高硬件规格参数是为了提高软硬解性能效率。2 可以适用较低适用于自己网络的清晰度观看直播。3 则是保证自己网络的稳定性。<br>满足以上三点大概率用户侧的流畅观看就能得到保证了。</p>
+<h1 id="“进阶”"><a href="#“进阶”" class="headerlink" title="“进阶”"></a>“进阶”</h1><h2 id="延迟"><a href="#延迟" class="headerlink" title="延迟"></a>延迟</h2><p>作为直播，其<code>实时性</code>也是非常重要的，不能说用户观看很流畅，但用户与主播端有几十秒的延迟，那是完全无法接受的。那如何才能做到用户和主播间的延迟尽量缩小呢？引起延迟主要的原因在哪里？下面列举下产生网络延迟的几个原因：</p>
+<ol>
+<li><p>数据链路延迟<br>数据从主播端传递到观看端，中间是会经过很多个网络节点的。假设我们所在位置的地球的另一侧有一位主播开始推流，一路都是光纤传输，那么不考虑 CDN 节点内部转发或转码好时的话，我们 2s（TCP 的三次握手导致） 后就能看到画面。但实际情况下，主播离我们及时很近，在数据链路传播上我们可优化空间很少。</p>
+</li>
+<li><p>网络抖动<br>这里的抖动是指 <code>ip 数据包</code>到达的顺序、间隔和出发时不一样，这就导致了接收端需要等待完整数据重组，就不可避免造成了延迟。</p>
+</li>
+<li><p>网络丢包<br>和网络抖动类似，基于 TCP 的推流协议，虽然可靠性得到了保证，到这可靠性是靠牺牲时间保证的，TCP <code>的三次握手</code>，相当于 1.5 个 <code>RTT</code>。另外 TCP 的自动重传机制在丢包的情况下回不断重发，这种高容错的机制也导致了一定的网络耗时。</p>
+</li>
+<li><p>CDN 缓冲策略<br>播放器在向 CDN 拉取数据时，CDN 并不会把最新的数据吐给播放器，而是会选择将缓冲区中的数据给到播放器（这么做是为了减少网络抖动引起客户端的卡顿），此时，缓冲区中有多少数据，那么就有多少的延迟增加了。</p>
+</li>
+<li><p>播放器缓冲<br>播放器在拉到 CDN 数据时，也不是会立马就播放（为了减少网络抖动带来的卡顿），那么此时播放器的缓冲也增加了延迟。</p>
+</li>
+</ol>
+<p>综合上诉，<br><code>直播延迟 = RTT * 1.5 + CDN 缓冲 + 播放器起播缓冲</code></p>
+<p>各家直播平台都有自己针对延迟的优化措施，这里不一一列举。</p>
+<h2 id="首帧"><a href="#首帧" class="headerlink" title="首帧"></a>首帧</h2><p>首帧即用户点击直播间，到看到直播首帧画面的耗时，这个时间也是用于衡量用户体验的一个重要指标。目前市面上优秀的直播平台，首帧时间已经优化到一秒内，做到了真正的秒开。</p>
+<p>首帧耗时长也是有许多原因在里面：<code>主线程阻塞</code>，其他业务<code>抢占播放器资源</code>，<code>频流码率高</code>，<code>播放器起播缓存</code>，<code>流格式探测</code>等。</p>
+<p>首帧优化当然就是针对上面这些问题的优化，具体不细说，各家有各家自己的策略，一切还是要放到实际业务场景考虑。</p>
+<h2 id="卡顿"><a href="#卡顿" class="headerlink" title="卡顿"></a>卡顿</h2><p>卡顿即缓冲，这是最最影响用户体验的点。造成卡顿的原因也是多种多样，整个直播链路中任何一个点出现问题都有可能造成卡顿，卡顿也是比较难优化的一个直播指标。<br>这里笔者主要给出几个优化卡顿的建议：</p>
+<ol>
+<li>推流端合理选择推流码率</li>
+<li>推流端合理选择推流协议</li>
+<li>CDN 提供多路清晰度供用户选择</li>
+<li>拉流端应选择码率合适的流去播</li>
+</ol>
+<h2 id="音画不同步"><a href="#音画不同步" class="headerlink" title="音画不同步"></a>音画不同步</h2><p>音画不同步即听到的声音与画面不一致，导致音画不同步的原因也有很多：</p>
+<ol>
+<li>音频源于采集设备距离较远</li>
+<li>音视频 pts 非单调递增</li>
+<li>播放器性能问题（音频帧解码快于视频帧解码）</li>
+</ol>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>差不多就是这么多了，过多的实现细节不赘述，感兴趣的同学可以自行学习或找我交流。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%9B%B4%E6%92%AD%E6%8A%80%E6%9C%AF/" rel="tag"># 直播技术</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/03/30/android-opengl-02/" rel="prev" title="Android OpenGL - 02.EGL创建流程及EGL测试">
+                  <i class="fa fa-angle-left"></i> Android OpenGL - 02.EGL创建流程及EGL测试
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/09/12/tiktok-app/" rel="next" title="两年前仿抖音app">
+                  两年前仿抖音app <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">BLESS</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"scale":1,"hHeadPos":0.5,"vHeadPos":0.618,"jsonPath":"/live2dw/assets/assets/tororo.model.json"},"display":{"superSample":2,"width":150,"height":300,"position":"left","hOffset":0,"vOffset":-20},"mobile":{"show":true,"scale":0.5},"react":{"opacityDefault":0.7,"opacityOnHover":0.2},"archive_generator":{"per_page":0,"yearly":false,"monthly":false,"daily":false},"log":false});</script></body>
+</html>

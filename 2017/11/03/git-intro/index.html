@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zqlxtt.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="最近花了点时间用 C++ 写了一个 GIF 图片的解析程序，在这一过程中我找了许多中文相关的材料，但没有哪一篇是真正能够让读者完全理解 GIF 的文件格式和 LZW 在 GIF 中的应用（解析部分）。在查阅了一些官方文档后我算是顺利的将程序完成了，顺道我就把 GIF 文件的解析在这儿讲讲清除，方便大家学习。 下面这两个网页是我参考的比较权威的资料，大家也可以直接阅读。  http:&#x2F;&#x2F;gifli">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GIF 字节格式介绍">
+<meta property="og:url" content="https://zqlxtt.cn/2017/11/03/git-intro/index.html">
+<meta property="og:site_name" content="川陀知识库">
+<meta property="og:description" content="最近花了点时间用 C++ 写了一个 GIF 图片的解析程序，在这一过程中我找了许多中文相关的材料，但没有哪一篇是真正能够让读者完全理解 GIF 的文件格式和 LZW 在 GIF 中的应用（解析部分）。在查阅了一些官方文档后我算是顺利的将程序完成了，顺道我就把 GIF 文件的解析在这儿讲讲清除，方便大家学习。 下面这两个网页是我参考的比较权威的资料，大家也可以直接阅读。  http:&#x2F;&#x2F;gifli">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-9a836aaf2873ebc0.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-d2847ad5154c6744.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-434075727f059761.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-9da5a168aebb3bf5.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-4309aa3f589fbaa8.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-c558f44ea7b41241.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-49686736a5ecb836.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-49686736a5ecb836.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-ebc764ba29f365c1.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-607ad12f91e24c47.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-8b4ded747247ce4a.webp">
+<meta property="article:published_time" content="2017-11-03T11:08:22.000Z">
+<meta property="article:modified_time" content="2024-08-21T03:16:19.785Z">
+<meta property="article:author" content="BLESS">
+<meta property="article:tag" content="多媒体">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-9a836aaf2873ebc0.webp">
+
+
+<link rel="canonical" href="https://zqlxtt.cn/2017/11/03/git-intro/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zqlxtt.cn/2017/11/03/git-intro/","path":"2017/11/03/git-intro/","title":"GIF 字节格式介绍"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>GIF 字节格式介绍 | 川陀知识库</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">川陀知识库</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">清风不识字何故乱翻书</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GIF-%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">GIF 文件格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Header"><span class="nav-number">1.1.</span> <span class="nav-text">Header</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Logical-Screen-Descriptor"><span class="nav-number">1.2.</span> <span class="nav-text">Logical Screen Descriptor</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Global-Color-Table"><span class="nav-number">2.</span> <span class="nav-text">Global Color Table</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Graphics-Control-Extension"><span class="nav-number">3.</span> <span class="nav-text">Graphics Control Extension</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Image-Descriptor"><span class="nav-number">4.</span> <span class="nav-text">Image Descriptor</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Local-Color-Table"><span class="nav-number">5.</span> <span class="nav-text">Local Color Table</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Image-Data"><span class="nav-number">6.</span> <span class="nav-text">Image Data</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Trailer"><span class="nav-number">7.</span> <span class="nav-text">Trailer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Plain-Text-Extension%E3%80%81Application-Extension%E5%92%8CComment-Extension"><span class="nav-number">8.</span> <span class="nav-text">Plain Text Extension、Application Extension和Comment Extension</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">BLESS</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zqlxtt.cn/2017/11/03/git-intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="BLESS">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="川陀知识库">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="GIF 字节格式介绍 | 川陀知识库">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GIF 字节格式介绍
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-11-03 19:08:22" itemprop="dateCreated datePublished" datetime="2017-11-03T19:08:22+08:00">2017-11-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-08-21 11:16:19" itemprop="dateModified" datetime="2024-08-21T11:16:19+08:00">2024-08-21</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-9a836aaf2873ebc0.webp" alt="gif"></p>
+<p>最近花了点时间用 C++ 写了一个 GIF 图片的解析程序，在这一过程中我找了许多中文相关的材料，但没有哪一篇是真正能够让读者完全理解 GIF 的文件格式和 LZW 在 GIF 中的应用（解析部分）。在查阅了一些官方文档后我算是顺利的将程序完成了，顺道我就把 GIF 文件的解析在这儿讲讲清除，方便大家学习。</p>
+<p>下面这两个网页是我参考的比较权威的资料，大家也可以直接阅读。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="http://giflib.sourceforge.net/index.html">http://giflib.sourceforge.net/index.html</a><br><a target="_blank" rel="noopener" href="https://www.w3.org/Graphics/GIF/spec-gif89a.txt">https://www.w3.org/Graphics/GIF/spec-gif89a.txt</a></p>
+</blockquote>
+<span id="more"></span>
+<h1 id="GIF-文件格式"><a href="#GIF-文件格式" class="headerlink" title="GIF 文件格式"></a>GIF 文件格式</h1><p>下图是我从 <a target="_blank" rel="noopener" href="http://giflib.sourceforge.net/index.html">http://giflib.sourceforge.net/index.html</a> 拿过来的图，从图上可以很清晰的看到 GIF 文件的内部组成。</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-d2847ad5154c6744.webp" alt="image"></p>
+<p>上图中一个有十一块，其中有八块是 GIF 图像必备的：<code>Header</code>（头）、<code>Logical Screen Descriptor</code>（逻辑屏幕描述符）、<code>Image Descriptor</code>（图像描述符）、<code>Image Data</code>（图像数据流）、<code>Plain Text Extension</code>（文本扩展）、<code>Application Extension</code>（应用扩展）、<code>Comment Extension</code>（注释扩展）、<code>Trailer</code>（尾部标记）。</p>
+<p>另外还有三个可选块：<code>Global Color Table</code>（全局颜色表）、<code>Graphic Control Extension</code>（图形控制扩展）、<code>Local Color Table</code>（本地颜色表）。</p>
+<p>传统的 Gif 解码器正是通过上述的这些块来对 GIF 文件进行解析，下面我们就按照顺序来详细了解一下这些块的内部字节格式。</p>
+<p>为了比较直观的了解这些内容，我还是从 <a target="_blank" rel="noopener" href="http://giflib.sourceforge.net/index.html">http://giflib.sourceforge.net/index.html</a> 拿了一个 GIF 图过来，如下图：</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-434075727f059761.webp" alt="image"></p>
+<p>其放大后的效果图如下：</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-9da5a168aebb3bf5.webp" alt="image"></p>
+<p>上图经过放大处理，其代表了一个 10*10 个像素的 GIF 图，其内部字节如下：</p>
+<pre><code>47 49 46 38 39 61 
+0A 00 0A 00 91 00 00 
+FF FF FF FF 00 00 00 00 FF 00 00 00 
+21 F9 04 00 00 00 00 00 
+2C 00 00 00 00 0A 00 0A 00 00 
+02 16 8C 2D 99 87 2A 1C DC 33 A0 02 75 EC 95 FA A8 DE 60 8C 04 91 4C 01 00
+3B</code></pre><h2 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h2><p>GIF 文件由它的 Header 块最为其文件的入口，Header 一共包含六个字节，如下图：</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-4309aa3f589fbaa8.webp" alt="image"></p>
+<p>其中前三个字节对应 ASCII 码中的 G、I、F 三个字符，后三个字节用于说明此 GIF 的版本号，目前的版本号有 87a 和 89a 两个。</p>
+<p>对于上面的示例图来说，前六个字节分别是 47、49、46、38、39、61。 用 0xED 查看如下图：</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-c558f44ea7b41241.webp" alt="image"></p>
+<h2 id="Logical-Screen-Descriptor"><a href="#Logical-Screen-Descriptor" class="headerlink" title="Logical Screen Descriptor"></a>Logical Screen Descriptor</h2><p>Logical Screen Descriptor（逻辑屏幕描述符）通常紧跟在 Header 后面，它的作用是告诉解码器 GIF 图像的分辨率，背景色和 Global Color Table 等信息。先看一下其字节的组成：</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-49686736a5ecb836.webp" alt="image"></p>
+<p>按顺序看，</p>
+<ul>
+<li><code>Canvas Width</code>：表示 GIF 图像的宽度，单位是像素。</li>
+<li><code>Canvas Height</code>：表示 GIF 图像的高度，单位是像素。</li>
+<li><code>Packed Field</code>：这是一个包装字段，内部的不同 bit（位）表示有不同的含义<ul>
+<li>从左边数第一位表示 <code>Global Color Table Flag</code>，如果其为 1 ，则表示存在 Global Color Table。如果为 0，则没有 Global Color Table。</li>
+<li>从左边数第二、三、四位表示 <code>Color Resolution</code>，用于表示色彩分辨率，如果为 s，则 Global Color Table 的颜色数为 2^(s+1)个，如果这是 s = 1,则一共有 4 中颜色，即每个像素可以用 2位（二进制） 来表示。</li>
+<li>从左边数第五位表示 <code>Sort Flag</code>，它有两个值 0 或 1。如果为 0 则 Global Color Table 不进行排序，为 1 则表示 Global Color Table 按照降序排列，出现频率最多的颜色排在最前面。</li>
+<li>最右边三位表示 Global Color Table 的颜色数，如其值为 s，则全局列表颜色个数的计算公式为 2^(s+1)。如 s = 1，则 Global Color Table 包含 4 个颜色。</li>
+</ul>
+</li>
+<li><code>Background Color Index</code>：表示 GIF 的背景色在 Global Color Table 中的索引。</li>
+<li><code>Pixel Aspect Ratio</code>：表示用于计算原始图像中像素宽高比的近似因子，一般情况为 0，顾不做深入了解。</li>
+</ul>
+<p>对于我们是示例图，其 Logical Screen Descriptor 对应的字节如下：</p>
+<pre><code>0A 00 0A 00 91 00 00</code></pre><p>其中：<br><code>Canvas Width</code> = 0A00 = 10（十进制）<br><code>Canvas Height</code> = 0A00 = 10（十进制）<br><code>Packed Field</code> = 10010001（二进制），其中 Global Color Table 为 1，则存在 Global Color Table。Color Resolution 为 1，表示三原色分别用 2 位来表示。Sort Flag = 0，不排序。Global Color Table 中颜色数为 4 。<br><code>Background Color Index</code> = 0，说明此 GIF 的背景色为 Global Color Table 中第一个颜色。<br><code>Pixel Aspect Ratio</code> = 0,可忽略。</p>
+<h1 id="Global-Color-Table"><a href="#Global-Color-Table" class="headerlink" title="Global Color Table"></a>Global Color Table</h1><p>Global Color Table 如果有的话就会跟在 Logical Screen Descriptor 块后面。其块中的字节格式如下：</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-49686736a5ecb836.webp" alt="image"></p>
+<p>在 Global Color Table 中每个字节仅代表一种颜色，所以 Global Color Table 的字节数 = 颜色数 * 3.在 Logical Screen Descriptor 中我们知道示例中包含 4 中颜色，即 Global Color Table 的字节数为 12 。所以读取接下的 12 个字节。其具体字节如下：</p>
+<pre><code>FF FF FF FF 00 00 00 00 FF 00 00 00 </code></pre><p>根据上面的数据我们来构建 Global Color Table</p>
+<table>
+<thead>
+<tr>
+<th>索引</th>
+<th>字节组合</th>
+<th>颜色</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>FFFFFF</td>
+<td>白色</td>
+</tr>
+<tr>
+<td>1</td>
+<td>FF0000</td>
+<td>红色</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0000FF</td>
+<td>蓝色</td>
+</tr>
+<tr>
+<td>3</td>
+<td>000000</td>
+<td>黑色</td>
+</tr>
+</tbody></table>
+<h1 id="Graphics-Control-Extension"><a href="#Graphics-Control-Extension" class="headerlink" title="Graphics Control Extension"></a>Graphics Control Extension</h1><p>这里先不说 Graphics Control Extension，我们先看 Global Color Table 后面紧跟的那个字节，从示例中可以看到的<code>21</code>，21在 GIF 格式中是有特殊意义的，它表示 Extension Introducer（扩展入口），即接下来的一段数据为最开始提到的这几个扩展中的某一个扩展。</p>
+<p>OK，那我们接着 21 往后看，下一个字节为<code>F9</code>，F9 也是有特殊含义的，表示这是一个 Graphics Control Extension。</p>
+<p>Graphics Control Extension 算上 21 和 F9 一共有八个字节，其结构如下图：</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-ebc764ba29f365c1.webp" alt="image"></p>
+<p>其中前两个字节上面已经提到，看接下来的几个字节分别表示什么含义：</p>
+<ul>
+<li><code>Byte Size</code>：表示接下来的有效数据字节数。</li>
+<li><code>Packed Field</code>：是一个包装字段，内部不同位的意义也不同。<ul>
+<li>从左边数一，二，三位表示Reserved for Future Use，即保留位，暂无用处。</li>
+<li>从左边数四，五，六位表示 Display Method，表示在进行逐帧渲染时，前一帧留下的图像作何处理：0：不做任何处理。1：保留前一帧图像，在此基础上进行渲染。2：渲染前将图像置为背景色。3：将被下一帧覆盖的图像重置。</li>
+<li>从右数第二位表示 User Input Flag，表示是否需要在得到用户的输入时才进行下一帧的输入（具体用户输入指什么视应用而定）。0 表示无需用户输入。1 表示需要用户输入。</li>
+<li>最右边一位，表示 Transparent Flag，当该值为 1 时，后面的 Transparent Color Index 指定的颜色将被当做透明色处理。为 0 则不做处理。</li>
+</ul>
+</li>
+<li><code>Delay Time</code>：表示 GIF 动图每一帧之间的间隔，单位为百分之一秒。当为 0 时间隔由解码器管理。</li>
+<li><code>Transparent Color Index</code>：当 Transparent Flag 为 1 时，此字节有效，表示此索引在 Global Color Table 中对应的颜色将被当做透明色做处理。</li>
+<li><code>Block Terminator</code>：表示 Extension 到此结束。</li>
+</ul>
+<p>下面看一下示例中 Graphics Control Extension 对应的字节：</p>
+<pre><code>21 F9 04 00 00 00 00 00</code></pre><p>其中 21，F9 表示这是一个 Graphics Control Extension 块。<br>Byte Size 为 4。<br>其它值都为 0 ，概括来讲此 Graphics Control Extension 对应下一帧的渲染无需任何处理，也不需要用户输入，也没有需要做透明处理的颜色值。渲染器要做的就是直接把下一帧图像渲染在画布上即可。</p>
+<h1 id="Image-Descriptor"><a href="#Image-Descriptor" class="headerlink" title="Image Descriptor"></a>Image Descriptor</h1><p>上面讲到 21 上 Extension 的标识符。这里的 Image Descriptor 也有自己的标识符，为 <code>2C</code>。下面看一下 Image Descriptor 内部字节结构：</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-607ad12f91e24c47.webp" alt="image"></p>
+<p>其中 Image Seperator 为固定值 2C。</p>
+<ul>
+<li><code>Image Left</code>：该值表示下一帧图像渲染位置离画布左边的距离（从 0 开始）。</li>
+<li><code>Image Top</code>：该值表示下一帧图像渲染位置离画布上边的距离（从 0 开始）。</li>
+<li><code>Image Width</code>：该值表示下一帧图像的宽度。</li>
+<li><code>Image Height</code>：该值表示下一帧图像的高度。</li>
+<li><code>Packed Field</code>：这是一个包装字段，内部不同位的意义也不同。<ul>
+<li>从左数第一位：Local Color Table Flag，表示下一帧图像是否需要一个独立的颜色表。1 为需要，0 为不需要。</li>
+<li>从左数第二位：Interlace Flag，表示是否需要隔行扫描。1 为需要，0 为不需要。</li>
+<li>从左数第三位：Sort Flag，如果需要 Local Color Table 的话，这个字段表示其排列顺序，同 Global Color Table。</li>
+<li>从左数第四、五位：Reserved For Future Use，保留位。</li>
+<li>从左数最后三位：Size of Local Color Table，同 Global Color Table 中的该位。如需要本地颜色表，则该数有效。</li>
+</ul>
+</li>
+</ul>
+<p>接着看一下示例中的对应字节：</p>
+<pre><code>2C 00 00 00 00 0A 00 0A 00 00 </code></pre><p>2C 表示 Image Descriptor<br>Image Left = 0<br>Image Top = 0<br>Image Width = 10<br>Image Height = 10<br>上面这四个数字表示即将渲染的一帧大小为 10*10 像素，正好与 GIF 图的分辨率一致。<br>打包字段都为零，表示下一帧不需要 Local Color Table，也不需要进行隔行扫描。</p>
+<blockquote>
+<p>这里读者可能会好奇我们不是在 Logical Screen Descriptor 中知道了图像的分辨率吗，为什么还要在 Image Descriptor 中额外指定图像的宽和高。其实 GIF 在进行编码的时候并不一定对每一帧进行全尺寸的压缩。因为有时候一个 GIF 图只有中间区域是动的，四周都是静止的，那只需要对中间那部分进行压缩编码即可。所以这里的 Image Left、Image Top、Image Width 和 Image Height正好可以指定一个小于等于 GIF 分辨率的图像。</p>
+</blockquote>
+<h1 id="Local-Color-Table"><a href="#Local-Color-Table" class="headerlink" title="Local Color Table"></a>Local Color Table</h1><p>local color table 在本示例中不涉及，我也不多介绍，在处理的时候按照 Global Color Table 处理即可。</p>
+<h1 id="Image-Data"><a href="#Image-Data" class="headerlink" title="Image Data"></a>Image Data</h1><p>如果存在 Local Color Table，Image Data 就紧跟其后。如若不存在，则紧跟在 Image Descriptor 后。下面先看一下 Image Data 的内部字节组成。</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/normal/2702499-8b4ded747247ce4a.webp" alt="image"></p>
+<ul>
+<li><code>LZW Minimum Code Size</code>: GIF 在对每一帧的像素颜色在 Color Table 所对应的索引进行 LZW 压缩，这里的 LZW Minimum Code Size 就是 LZW 压缩中很关键的一个值，不过目前这个值先放着，等后面讲到对 LZW 解压缩时再讲。</li>
+<li><code>Number of bytes of data in sun-blocks（01-FF）</code>：这个值表示在其后面的有效字节的个数。范围为 01-FF，当其值为 0，则表示 Image Data 到此为止，后面就是其他块的数据了。这里需要注意由于其最大值为 FF，但图像的像素个数可能会大于这个值，所以从图上也能知道这个 Data sub-Blocks是有可能接连出现很多个的。</li>
+<li><code>Data Sub-Block(s)</code>：表示有效的字节块。</li>
+<li><code>Block Terminator</code>：表示 Image Data 的结束部分。</li>
+</ul>
+<p>接着看一下示例中对应的字节：</p>
+<pre><code>02 16 8C 2D 99 87 2A 1C DC 33 A0 02 75 EC 95 FA A8 DE 60 8C 04 91 4C 01 00</code></pre><p>02 表示 LZW Minimum Code Size。<br>16（十六进制） 表示后面紧跟着的 22 个字节用来表示下一帧的图像数据。<br>00 表示 Image Data 到此为止。</p>
+<h1 id="Trailer"><a href="#Trailer" class="headerlink" title="Trailer"></a>Trailer</h1><p>从上面的示例看，最后还剩下一个字节 3B，这个在 GIF 中也有特殊含义，是尾部标记的意思，GIF 的字节内容到此就结束了。</p>
+<h1 id="Plain-Text-Extension、Application-Extension和Comment-Extension"><a href="#Plain-Text-Extension、Application-Extension和Comment-Extension" class="headerlink" title="Plain Text Extension、Application Extension和Comment Extension"></a>Plain Text Extension、Application Extension和Comment Extension</h1><p>最后还剩下上面三个 Extension，他们主要是为 GIF 提供一些额外的信息，本身的信息对实际的渲染没有多少影响。所以这里我也不多介绍，想深入了解的可以阅读一开始提到的两个网址。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本文主要以 GIF 内部字节的格式作为出发点，简单介绍了十一种块。只有充分理解了各个块内部的含义，才能为其编写正确的解码器。但仅仅只了解各个块还是不够的，GIF 的图像数据采用的是 LZW 算法进行压缩，所以还需要对 LZW 有较深理解。在下一篇《GIF 与 LWZ》中我将结合本文中的示例图像，详细讲解如何通过 LWZ 对 GIF 的图像数据进行压缩和解压。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%A4%9A%E5%AA%92%E4%BD%93/" rel="tag"># 多媒体</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/06/12/diy-code/" rel="prev" title="聊聊给DiyCode写第三方App的事">
+                  <i class="fa fa-angle-left"></i> 聊聊给DiyCode写第三方App的事
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2017/11/15/gif-bytes-format/" rel="next" title="GIF 字节格式解析">
+                  GIF 字节格式解析 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">BLESS</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"scale":1,"hHeadPos":0.5,"vHeadPos":0.618,"jsonPath":"/live2dw/assets/assets/tororo.model.json"},"display":{"superSample":2,"width":150,"height":300,"position":"left","hOffset":0,"vOffset":-20},"mobile":{"show":true,"scale":0.5},"react":{"opacityDefault":0.7,"opacityOnHover":0.2},"archive_generator":{"per_page":0,"yearly":false,"monthly":false,"daily":false},"log":false});</script></body>
+</html>

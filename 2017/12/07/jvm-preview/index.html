@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"zqlxtt.cn","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Java说到 Java，大家第一时间想到的类似于下面的程序语句： 12345678910package com.zqlite.jvm;public class HelloJVM &#123;    private static final int k &#x3D; 100;    public static void main(String ...args)&#123;        int a &#x3D; 0,b">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM 概览">
+<meta property="og:url" content="https://zqlxtt.cn/2017/12/07/jvm-preview/index.html">
+<meta property="og:site_name" content="川陀知识库">
+<meta property="og:description" content="Java说到 Java，大家第一时间想到的类似于下面的程序语句： 12345678910package com.zqlite.jvm;public class HelloJVM &#123;    private static final int k &#x3D; 100;    public static void main(String ...args)&#123;        int a &#x3D; 0,b">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/1.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/2.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/3.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/4.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/5.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/6.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/7.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/8.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/9.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/10.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/11.webp">
+<meta property="og:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/12.webp">
+<meta property="article:published_time" content="2017-12-07T13:38:50.000Z">
+<meta property="article:modified_time" content="2024-08-21T03:16:19.785Z">
+<meta property="article:author" content="BLESS">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/1.webp">
+
+
+<link rel="canonical" href="https://zqlxtt.cn/2017/12/07/jvm-preview/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://zqlxtt.cn/2017/12/07/jvm-preview/","path":"2017/12/07/jvm-preview/","title":"JVM 概览"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>JVM 概览 | 川陀知识库</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">川陀知识库</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">清风不识字何故乱翻书</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java"><span class="nav-number">1.</span> <span class="nav-text">Java</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JVM"><span class="nav-number">2.</span> <span class="nav-text">JVM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JVM-%E4%B8%AD%E7%9A%84-Java-%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F%E5%88%92%E5%88%86"><span class="nav-number">2.1.</span> <span class="nav-text">JVM 中的 Java 内存区域划分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E5%9C%A8-JVM-%E4%B8%AD%E7%9A%84%E5%88%9B%E5%BB%BA%E8%BF%87%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">对象在 JVM 中的创建过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80"><span class="nav-number">2.3.</span> <span class="nav-text">对象的内存布局</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Class-%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">Class 文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Class-%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84"><span class="nav-number">3.1.</span> <span class="nav-text">Class 内部结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E8%8A%82%E7%A0%81%E6%8C%87%E4%BB%A4%E4%BB%8B%E7%BB%8D"><span class="nav-number">3.2.</span> <span class="nav-text">字节码指令介绍</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JVM-%E4%B8%8E-Class-%E6%96%87%E4%BB%B6"><span class="nav-number">4.</span> <span class="nav-text">JVM 与 Class 文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD"><span class="nav-number">4.1.</span> <span class="nav-text">类加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="nav-number">4.2.</span> <span class="nav-text">类加载器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E6%A0%88%E7%9A%84%E8%A7%A3%E9%87%8A%E5%99%A8%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B"><span class="nav-number">4.3.</span> <span class="nav-text">基于栈的解释器执行过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E6%A0%88%E5%B8%A7%E7%BB%93%E6%9E%84"><span class="nav-number">4.3.1.</span> <span class="nav-text">运行时栈帧结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E9%87%8A%E5%99%A8%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B%E5%AE%9E%E4%BE%8B"><span class="nav-number">4.3.2.</span> <span class="nav-text">解释器执行过程实例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">BLESS</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zqlxtt.cn/2017/12/07/jvm-preview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="BLESS">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="川陀知识库">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JVM 概览 | 川陀知识库">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JVM 概览
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2017-12-07 21:38:50" itemprop="dateCreated datePublished" datetime="2017-12-07T21:38:50+08:00">2017-12-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-08-21 11:16:19" itemprop="dateModified" datetime="2024-08-21T11:16:19+08:00">2024-08-21</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="Java"><a href="#Java" class="headerlink" title="Java"></a>Java</h2><p>说到 Java，大家第一时间想到的类似于下面的程序语句：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zqlite.jvm;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloJVM</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">k</span> <span class="operator">=</span> <span class="number">100</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String ...args)</span>&#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">a</span> <span class="operator">=</span> <span class="number">0</span>,b=<span class="number">3</span>;</span><br><span class="line">        System.out.println(a+b+k);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<p>但这仅仅只属于 Java 技术体系中的 Java 程序设计语言。Java 的技术体系从传统意义上来看有以下几个：</p>
+<ol>
+<li>Java 程序设计语言</li>
+<li>各硬件平台上的 Java 虚拟机</li>
+<li>Class 文件格式</li>
+<li>Java API 类库</li>
+<li>其他商业机构或开源社区的第三方 Java 类库</li>
+</ol>
+<p>其中 1、4、5 大家应该比较熟悉，在编程中都能直接接触。2、3 对于大家来说可能陌生了些，但不夸张的讲，Java 能有如今的活力，其功臣正是 2 和 3。所以接下来的内容将围绕这两点展开，让你从更深的层次了解你所熟悉的 Java。</p>
+<h2 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h2><p>JVM（Java Virtual Machine）就是上面所说的 Java 虚拟机，其作用是加载与运行 Class 文件。有句话大家一定不陌生，“一次编写，到处运行”。简单解释一下，因为在 Class 文件和硬件平台中间隔着一个 JVM，由 JVM 负责加载和执行 Class 文件，这样平台的差异性就留给了 JVM 去考虑，而不是 Class 文件。也正因如此，Class 文件的格式可以真正做到平台无关性。</p>
+<h3 id="JVM-中的-Java-内存区域划分"><a href="#JVM-中的-Java-内存区域划分" class="headerlink" title="JVM 中的 Java 内存区域划分"></a>JVM 中的 Java 内存区域划分</h3><p>对于从事 C、C++ 的开发人员来说，在内存管理领域他们是拥有最高权力的“皇帝”，但又是从事最底层基础工作的“劳动人民”。他们即拥有与内存直接打交道的权利，又要负责维护每一个对象的生命周期。</p>
+<p>对于 Java 开发人员来说就轻松多了，在 JVM 自动内存管理机制的帮助下，不再需要维护每一个对象的生命周期，内存控制的权利由开发人员转移到了 JVM 。</p>
+<p>因为 JVM 需要管理 Java 运行期间的各种对象的生命周期，所以它在执行 Java 程序的时候会把它所管辖的内存分成若干个不同的数据区域，具体如下图：</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/1.webp" alt="image"></p>
+<p>对以上几个区域做下简单的介绍：</p>
+<ul>
+<li>方法区：线程共享区域，用于存储被虚拟机加载的类信息、常量、静态变量等数据。</li>
+<li>堆：线程共享区域，存放类实例以及数组。我们平时听到的 GC（垃圾回收）就是在堆上进行的。 </li>
+<li>虚拟机栈：线程私有区域，用于描述 Java 方法的执行模型。每个方法在执行同时会创建一个栈帧用于存储局部变量表、操作数、动态链接、方法出口等信息。</li>
+<li>本地方法栈：线程私有区域，与虚拟机栈作用类似，区别在于本地方法栈执行的是 Native 方法。</li>
+<li>程序计数器：线程私有区域，用于指向当前线程下一条需要执行的字节码指令。</li>
+</ul>
+<p>除了以上几个主要区域外，另外还要介绍一个区域：运行时常量池。它是方法区的一部分，用于存放编译期生成的字面量和符号引用。字面量好理解，比如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">str</span> <span class="operator">=</span> <span class="string">&quot;a&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>上面的 a 就是字面量。而符号引用则是一些字符串，用于给虚拟机定位类或类方法等。</p>
+<blockquote>
+<p>面试的时候有时会遇到这样的问题，Java 中每次声明并初始化一个 String 对象都会在堆上面分配内存吗？这里的答案当然是否，因为有可能新声明的对象已经在常量池中存在了，这时候 JVM 会将新对象的引用指向常量池中对应的值而不是在堆重新分配。</p>
+</blockquote>
+<h3 id="对象在-JVM-中的创建过程"><a href="#对象在-JVM-中的创建过程" class="headerlink" title="对象在 JVM 中的创建过程"></a>对象在 JVM 中的创建过程</h3><p>在 Java 中创建对象很简单，一个简单的 new 关键字就可以。但在虚拟机中，对象的创建过程是怎样的呢？我们来一起了解一下。</p>
+<p>在 JVM 中，创建对象的字节码指令是 new，当 JVM 执行引擎遇到 new 指令后会进行如下五步操作：</p>
+<p>一、检查这个指令的参数能否在常量池中定位到一个类的符号引用，并且检查这个符号引用代表的类是否已经加载、解析和初始化。</p>
+<p>下面我们看一下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zqlite.jvm;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloJVM</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String ...args)</span>&#123;</span><br><span class="line">        <span class="type">Object</span> <span class="variable">obj</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Object</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后用 javap 对这段代码生成的 class 文件进行反汇编处理，结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">Classfile /Users/scott/workspace/jvm/out/production/jvm/com/zqlite/jvm/HelloJVM.class</span><br><span class="line">  Last modified 2017-11-29; size 446 bytes</span><br><span class="line">  MD5 checksum bcc0b2d9129748ef0caa00e95cf95a47</span><br><span class="line">  Compiled from &quot;HelloJVM.java&quot;</span><br><span class="line">public class com.zqlite.jvm.HelloJVM</span><br><span class="line">  minor version: 0</span><br><span class="line">  major version: 52</span><br><span class="line">  flags: ACC_PUBLIC, ACC_SUPER</span><br><span class="line">Constant pool:</span><br><span class="line">   #1 = Methodref          #2.#19         // java/lang/Object.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">   #2 = Class              #20            // java/lang/Object</span><br><span class="line">   #3 = Class              #21            // com/zqlite/jvm/HelloJVM</span><br><span class="line">   #4 = Utf8               &lt;init&gt;</span><br><span class="line">   #5 = Utf8               ()V</span><br><span class="line">   #6 = Utf8               Code</span><br><span class="line">   #7 = Utf8               LineNumberTable</span><br><span class="line">   #8 = Utf8               LocalVariableTable</span><br><span class="line">   #9 = Utf8               this</span><br><span class="line">  #10 = Utf8               Lcom/zqlite/jvm/HelloJVM;</span><br><span class="line">  #11 = Utf8               main</span><br><span class="line">  #12 = Utf8               ([Ljava/lang/String;)V</span><br><span class="line">  #13 = Utf8               args</span><br><span class="line">  #14 = Utf8               [Ljava/lang/String;</span><br><span class="line">  #15 = Utf8               obj</span><br><span class="line">  #16 = Utf8               Ljava/lang/Object;</span><br><span class="line">  #17 = Utf8               SourceFile</span><br><span class="line">  #18 = Utf8               HelloJVM.java</span><br><span class="line">  #19 = NameAndType        #4:#5          // &quot;&lt;init&gt;&quot;:()V</span><br><span class="line">  #20 = Utf8               java/lang/Object</span><br><span class="line">  #21 = Utf8               com/zqlite/jvm/HelloJVM</span><br><span class="line">&#123;</span><br><span class="line">  public com.zqlite.jvm.HelloJVM();</span><br><span class="line">    descriptor: ()V</span><br><span class="line">    flags: ACC_PUBLIC</span><br><span class="line">    Code:</span><br><span class="line">      stack=1, locals=1, args_size=1</span><br><span class="line">         0: aload_0</span><br><span class="line">         1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">         4: return</span><br><span class="line">      LineNumberTable:</span><br><span class="line">        line 6: 0</span><br><span class="line">      LocalVariableTable:</span><br><span class="line">        Start  Length  Slot  Name   Signature</span><br><span class="line">            0       5     0  this   Lcom/zqlite/jvm/HelloJVM;</span><br><span class="line"></span><br><span class="line">  public static void main(java.lang.String...);</span><br><span class="line">    descriptor: ([Ljava/lang/String;)V</span><br><span class="line">    flags: ACC_PUBLIC, ACC_STATIC, ACC_VARARGS</span><br><span class="line">    Code:</span><br><span class="line">      stack=2, locals=2, args_size=1</span><br><span class="line">         0: new           #2                  // class java/lang/Object</span><br><span class="line">         3: dup</span><br><span class="line">         4: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">         7: astore_1</span><br><span class="line">         8: return</span><br><span class="line">      LineNumberTable:</span><br><span class="line">        line 9: 0</span><br><span class="line">        line 10: 8</span><br><span class="line">      LocalVariableTable:</span><br><span class="line">        Start  Length  Slot  Name   Signature</span><br><span class="line">            0       9     0  args   [Ljava/lang/String;</span><br><span class="line">            8       1     1   obj   Ljava/lang/Object;</span><br><span class="line">&#125;</span><br><span class="line">SourceFile: &quot;HelloJVM.java&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>暂时无需理解上面的所有内容，我们只关注 new 字节码部分。</p>
+<p>找到</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0: new           #2</span><br></pre></td></tr></table></figure>
+
+<p>可以看到 new 指令码的参数是 #2，接着通过参数 #2 在常量池（Constant pool）中找到 #2 对应的内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#2 = Class              #20            // java/lang/Object</span><br></pre></td></tr></table></figure>
+
+<p>这里说明了 #2 对应的是一个类，类符号引用需要到 #20 中找，在看 #20 ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#20 = Utf8               java/lang/Object</span><br></pre></td></tr></table></figure>
+
+<p>这里的 #20 是一个字符串类型，其内容是 ava/lang/Object，表示 Object 类的符号引用即全限定名。接着 JVM 就会去寻找并加载、解析和初始化这个类。</p>
+<p>二、当在第一步确定了目标类以后，JVM 就会为这个类的新生对象在堆上面分配内存。对象所需要的内存大小在第一步的类加载后已经确定了，所以为对象分配内存也就等同于把一块确定大小的内存从 Java 堆中划分出来。</p>
+<p>三、分配完内存后，JVM 需要将分配到的内存空间都初始化为零值（不包括对象头）。</p>
+<blockquote>
+<p>这里需要注意，由于 JVM 会对对象的内存空间做初始化操作，所以在类中类似的定义一个 int i ，其默认值就是整型的零值 0 。Java 类变量也正因如此允许不赋初始值。但在类方法中，如果这样定义一个 i，在接下来的代码中如果使用 i 的话，会有报错提示 i 没有初始化值，</p>
+</blockquote>
+<p>四、当初始化完以后，JVM 就要对对象做必要的处理，比如这个对象是哪个类的实例、如何才能找到类的元数据信息、对象的哈希码、对象的 GC 分代年龄表的信息。这些信息都会放在对象头中。</p>
+<p>五、上面的工作都完成之后，从 JVM 的角度来看，一个新的对象已经产生了，但从 Java 程序的角度来看，对象创建才刚开始。<init> 方法还没有执行，所有的字段还都为零。所以一般在 new 指令码后都会跟 invokespecial 指令来调用 <init> 方法。此处的 <init> 即我们通常说的构造方法。</p>
+<h3 id="对象的内存布局"><a href="#对象的内存布局" class="headerlink" title="对象的内存布局"></a>对象的内存布局</h3><p>在上小节介绍了对象在 JVM 中的创建过程，这节简单介绍下对象的内存布局。</p>
+<p>对象的内存布局可以分三个区域：对象头、实例数据和对齐填充。</p>
+<p>其中对象头包括两部分信息，第一部分用于存储对象自身的运行时数据，如哈希码、GC 分代年龄、锁状态标志、线程持有的锁等。另外一部分则是类型指针，用于指向它的类元数据。JVM 可以通过这个指针来确定对象是属于哪个类的。另外需要注意的是如果对象是数组，那么对象头中还需要记录数组的长度。</p>
+<p>实例数据部分是对象真正存储的有效信息，也是在程序代码中所定义的各种类型字段的内容，包括从父类继承下来的和自己定义的。</p>
+<p>最后一部分并不是必须的，它仅仅起到了占位符的作用。有些虚拟机要求对象的起始地址必须是 8 字节的整数倍，换句话说就是对象大小必须是 8 字节的整数倍。所以当不足整数倍的时候，就需要进行对齐填充处理。</p>
+<p>下面这张图简单表示了对象在内存中的布局：</p>
+<p> <img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/2.webp" alt="image"></p>
+<h2 id="Class-文件"><a href="#Class-文件" class="headerlink" title="Class 文件"></a>Class 文件</h2><p>计算机只认识 0 和 1 ，这是常识。所以我们编写的程序都需要经过编译器翻译成有 0 和 1 构成的二进制格式才能被计算机执行。但在近十几年内，虚拟机以及大量建立在虚拟机上的程序语言如雨后春笋般出现并蓬勃发展，由此二进制本地机器码已不再是唯一的选择，越来越多的程序语言选择了与操作系统和机器指令集无关的、平台中立的格式作为程序编译后的存储格式。我们这里的 Class 文件就是其中一种。</p>
+<p>我们通常都把 Java 和 JVM 有意识无意识的联系在一起，但 JVM 其实并不关心 Java。什么意思呢？JVM 面向的是 Class 格式的文件，它并不关系 Class 的来源是何种语言。如 Clojure、Groovy、Jruby、Jython、Scala 等都可以被编译成 Class 文件，从而在 JVM 上运行。</p>
+<h3 id="Class-内部结构"><a href="#Class-内部结构" class="headerlink" title="Class 内部结构"></a>Class 内部结构</h3><p>Class 文件是一组以 8 位字节为基础单位的二进制流，各个数据项目严格按照顺序紧凑地排列在 Class 文件中，其中没有任何分隔符，这使得整个 Class 文件中存储的内容几乎全部都是程序运行必须的数据，没有空隙存在。</p>
+<p>Class 文件的完整格式见下表：</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/3.webp" alt="image"></p>
+<p>其中类型中的 u4，u2以及没有这上图出现的 u1，u8都表示无符号数。其中 u1 表示 1 个字节，u2 表示 2 个字节，以此类推。名称则说明该位置数据的作用，如 constant_pool 表示常量池。数量则说明 Class 文件中，不同名称的数据块的个数。如 constant_pool 的个数取决于 constant_pool_count，而 constant_pool_count 则是占用两个字节的无符号数。</p>
+<p>不管是多复杂的 Class 文件，其内部数据结构必然是按照上表来排列的，由于其内部各类型的数据比较复杂，这里也不展开讲。这一节大家只要知道 Class 文件内部有这些数据就可以了，如果需要查看 Class 文件，可以使用反编译工具 javap 。具体命令如下：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javap -v ClassFile</span><br></pre></td></tr></table></figure>
+
+<h3 id="字节码指令介绍"><a href="#字节码指令介绍" class="headerlink" title="字节码指令介绍"></a>字节码指令介绍</h3><p>JVM 中的指令由一个字节长度的、代表着某种特定操作含义的数字（操作码，字节码）以及跟随其后的零至多个代表此操作所需参数（操作数）构成。由于 JVM 采用面向操作数栈而不是寄存器的结构，所以大多数的指令都不包含操作数，只有一个操作码。由于指令长度是 8 位的无符号数，所以 JVM 指令最多 256 条。</p>
+<p>大部分指令从其助记符就能知道它所操作的数据类型，比如 iload 指令用于从局部变量表加载 int 型的数据到操作数栈，而 fload 指令加载的则是 float 类型的数据。</p>
+<p>大部分与数据相关的字节码指令，其助记符都有特殊的字符来表示其服务的数据类型：i 代表对 int 型数据的操作，l 代表 long，s 代表 short，b 代表 byte，c 代表 char，f 代表 float，d 代表 double，a 代表 reference。</p>
+<p>如需查看所有 JVM 指令，点击此链接：<a target="_blank" rel="noopener" href="http://17b84ff5.wiz03.com/share/s/0nK4_R1FrArb2bpd-P3HNDCf0YLy5c0dYAqj2-_XjE3Jsh_A">http://17b84ff5.wiz03.com/share/s/0nK4_R1FrArb2bpd-P3HNDCf0YLy5c0dYAqj2-_XjE3Jsh_A</a></p>
+<h2 id="JVM-与-Class-文件"><a href="#JVM-与-Class-文件" class="headerlink" title="JVM 与 Class 文件"></a>JVM 与 Class 文件</h2><p>前面分开讲了 JVM 与 Class 文件，相信大家对它们有了一定的了解。Java 程序之所以可以运行起来，离不开这两位的紧密配合，下面我要给大家介绍的就是关于它俩的一些相关知识。</p>
+<h3 id="类加载"><a href="#类加载" class="headerlink" title="类加载"></a>类加载</h3><p>Class 文件从被 JVM 加载到内存，到卸载出内存为止，它的整个生命周期包括：加载、验证、准备、解析、初始化、使用和卸载。其中验证、准备、解析三个部分统称为连接，这七个阶段发生顺序如下图：</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/4.webp" alt="image"></p>
+<p>接下来我们简单了解一下这几个过程</p>
+<ul>
+<li>加载：在类的加载阶段 JVM 主要做了下面三件事：</li>
+</ul>
+<ol>
+<li>通过类的全限定名来获取定义此类的二进制字节流。</li>
+<li>将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构。</li>
+<li>在内存中生成一个代表这个类的 java.lang.Class 对象，作为方法区这个类的各种数据的访问入口。</li>
+</ol>
+<p>这里需要注意第一点，它只说明了通过全限定名获取定义此类的二进制字节流，但是没有具体说从哪获取，怎么获取。正是有了这么一个开放的入口，才有了现在 Java 的各种有趣的玩法。</p>
+<ul>
+<li><p>验证：这一阶段的目的是为了确保 Class 文件的字节流中包含的信息符合当前虚拟机的要求，并且不会危害虚拟机自身的安全。</p>
+</li>
+<li><p>准备：为类变量（static 变量）分配内存并设置变量的初始值。</p>
+</li>
+<li><p>解析：JVM 将常量池内的符号引用替换为直接引用。</p>
+</li>
+<li><p>初始化：前面几个阶段都是 JVM 主导和控制的，到了这一步开始，才真正开始执行 Java 程序代码。在准备阶段 JVM 为类变量设置了初始值，而在初始化阶段，JVM 会调用类构造器 <clinit>() 方法，即我们平时写的 static{ … } 这部分代码和静态变量赋值操作的集合。</p>
+</li>
+<li><p>使用：这部分是我们开发者最熟悉的，即我们所写的程序运行的过程。</p>
+</li>
+<li><p>卸载：当 JVM 确定某个类永久不需要的时候，就会执行类卸载，将其在内存中占用的空间全部释放。</p>
+</li>
+</ul>
+<h3 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h3><p>前面介绍 JVM 加载类的时候说到，JVM 对于从哪加载二进制字节流是对外开放的，即这部分是在 JVM 外部实现的。而用于实现类加载的代码模块称为“类加载器”。类加载器可以说是 Java 语言的一项创新，也是 Java 语言流行的重要原因之一，它起初是为 Java Applet 而开发出开的。虽然目前 Java Applet 技术基本已经“死了”，但类加载器却在类层次划分、OSGi、热部署、代码加密等领域大放异彩，成为了 Java 体系中一块重要的基石。</p>
+<p>下面我用代码展示如何自定义一个类加载器，从网络上加载一个类，然后调用其 toString 方法。其实现很简单，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zqlite.jvm;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.net.HttpURLConnection;</span><br><span class="line"><span class="keyword">import</span> java.net.URL;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloJVM</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String ...args)</span>&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="type">MyNetClassLoader</span> <span class="variable">classLoader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyNetClassLoader</span>();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Class&lt;?&gt; clazz = classLoader.findClass(<span class="string">&quot;http://7xprgn.com1.z0.glb.clouddn.com/RemoteClass.class&quot;</span>);</span><br><span class="line">            <span class="type">Object</span> <span class="variable">o</span> <span class="operator">=</span> clazz.newInstance();</span><br><span class="line">            System.out.print(o.toString());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException |IllegalAccessException | InstantiationException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">MyNetClassLoader</span> <span class="keyword">extends</span> <span class="title class_">ClassLoader</span>&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">protected</span> Class&lt;?&gt; findClass(String name) <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="type">URL</span> <span class="variable">url</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">URL</span>(name);</span><br><span class="line">                <span class="type">HttpURLConnection</span> <span class="variable">connection</span> <span class="operator">=</span> (HttpURLConnection) url.openConnection();</span><br><span class="line">                <span class="type">InputStream</span> <span class="variable">inputStream</span> <span class="operator">=</span>  connection.getInputStream();</span><br><span class="line">                <span class="type">byte</span>[] b = <span class="keyword">new</span> <span class="title class_">byte</span>[inputStream.available()];</span><br><span class="line">                inputStream.read(b);</span><br><span class="line">                <span class="keyword">return</span> defineClass(<span class="string">&quot;com.zqlite.jvm.RemoteClass&quot;</span>,b,<span class="number">0</span>,b.length);</span><br><span class="line"></span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">super</span>.findClass(name);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>首先我们自定义一个 MyNetClassLoader 类来继承 ClassLoader ，然后重写它的 findClass 方法，此方法会在系统找不到指定类的时候调用。在 findClass 中我们做的事情很简单，从网络上获取类的二进制字节流，然后读入数组，最后通过 defineClass 方法，将其转为 class 对象并返回。</p>
+<p>然后通过 class 对象的 newInstance 方法获得一个对应的实例对象，即 RemoteClass 的对象，然后输入其 toString 返回的内容。具体输出什么大家可以在本地跑了试试。</p>
+<h3 id="基于栈的解释器执行过程"><a href="#基于栈的解释器执行过程" class="headerlink" title="基于栈的解释器执行过程"></a>基于栈的解释器执行过程</h3><p>在 JVM 的内存区域划分的时候讲到过虚拟机栈这个区域，它是线程私有区域，用于描述 Java 方法的执行模型。每个方法在执行同时会创建一个栈帧用于存储局部变量表、操作数、动态链接、方法出口等信息。接下来我就用一个实际的例子来介绍在 JVM 中，一个方法是如何被解释执行的。借此机会也可以更进一步了解虚拟机栈相关知识。</p>
+<h4 id="运行时栈帧结构"><a href="#运行时栈帧结构" class="headerlink" title="运行时栈帧结构"></a>运行时栈帧结构</h4><p>栈帧是用于支持 JVM 进行方法调用和方法执行的数据结构，它是虚拟机栈的栈元素。每一个方法从调用到完成，都对应着一个栈帧在虚拟机栈中的入栈和出栈操作。</p>
+<p>每个栈帧都包括局部变量表、操作数、动态连接、方法返回地址和一些额外的附加信信息。并且在程序进行编译的时候，栈帧需要多大的局部变量表，多深的操作数栈都是已经确定的，因此一个栈帧需要分配多少内存也是确定不变的。JVM 中线程、虚拟机栈、栈帧的典型结构图如下：</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/5.webp" alt="image"></p>
+<h4 id="解释器执行过程实例"><a href="#解释器执行过程实例" class="headerlink" title="解释器执行过程实例"></a>解释器执行过程实例</h4><p>本节中，我准备了如下一段代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zqlite.jvm;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloJVM</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String ...args)</span>&#123;</span><br><span class="line">        calc();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">calc</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">a</span> <span class="operator">=</span> <span class="number">100</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">b</span> <span class="operator">=</span> <span class="number">200</span>;</span><br><span class="line">        <span class="type">int</span> <span class="variable">c</span> <span class="operator">=</span> <span class="number">300</span>;</span><br><span class="line">        <span class="keyword">return</span> (a + b) * c;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从 Java 的语言角度来讲，这段代码没有任何解释的必要，我们接下来用 javap 来看看他的字节码指令，如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line">Classfile /Users/scott/workspace/jvm/out/production/jvm/com/zqlite/jvm/HelloJVM.class</span><br><span class="line">  Last modified 2017-11-30; size 549 bytes</span><br><span class="line">  MD5 checksum 1bf313c415146d6070a30e8addc83a8c</span><br><span class="line">  Compiled from &quot;HelloJVM.java&quot;</span><br><span class="line">public class com.zqlite.jvm.HelloJVM</span><br><span class="line">  minor version: 0</span><br><span class="line">  major version: 52</span><br><span class="line">  flags: ACC_PUBLIC, ACC_SUPER</span><br><span class="line">Constant pool:</span><br><span class="line">   #1 = Methodref          #4.#24         // java/lang/Object.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">   #2 = Methodref          #3.#25         // com/zqlite/jvm/HelloJVM.calc:()I</span><br><span class="line">   #3 = Class              #26            // com/zqlite/jvm/HelloJVM</span><br><span class="line">   #4 = Class              #27            // java/lang/Object</span><br><span class="line">   #5 = Utf8               &lt;init&gt;</span><br><span class="line">   #6 = Utf8               ()V</span><br><span class="line">   #7 = Utf8               Code</span><br><span class="line">   #8 = Utf8               LineNumberTable</span><br><span class="line">   #9 = Utf8               LocalVariableTable</span><br><span class="line">  #10 = Utf8               this</span><br><span class="line">  #11 = Utf8               Lcom/zqlite/jvm/HelloJVM;</span><br><span class="line">  #12 = Utf8               main</span><br><span class="line">  #13 = Utf8               ([Ljava/lang/String;)V</span><br><span class="line">  #14 = Utf8               args</span><br><span class="line">  #15 = Utf8               [Ljava/lang/String;</span><br><span class="line">  #16 = Utf8               calc</span><br><span class="line">  #17 = Utf8               ()I</span><br><span class="line">  #18 = Utf8               a</span><br><span class="line">  #19 = Utf8               I</span><br><span class="line">  #20 = Utf8               b</span><br><span class="line">  #21 = Utf8               c</span><br><span class="line">  #22 = Utf8               SourceFile</span><br><span class="line">  #23 = Utf8               HelloJVM.java</span><br><span class="line">  #24 = NameAndType        #5:#6          // &quot;&lt;init&gt;&quot;:()V</span><br><span class="line">  #25 = NameAndType        #16:#17        // calc:()I</span><br><span class="line">  #26 = Utf8               com/zqlite/jvm/HelloJVM</span><br><span class="line">  #27 = Utf8               java/lang/Object</span><br><span class="line">&#123;</span><br><span class="line">  public com.zqlite.jvm.HelloJVM();</span><br><span class="line">    descriptor: ()V</span><br><span class="line">    flags: ACC_PUBLIC</span><br><span class="line">    Code:</span><br><span class="line">      stack=1, locals=1, args_size=1</span><br><span class="line">         0: aload_0</span><br><span class="line">         1: invokespecial #1                  // Method java/lang/Object.&quot;&lt;init&gt;&quot;:()V</span><br><span class="line">         4: return</span><br><span class="line">      LineNumberTable:</span><br><span class="line">        line 3: 0</span><br><span class="line">      LocalVariableTable:</span><br><span class="line">        Start  Length  Slot  Name   Signature</span><br><span class="line">            0       5     0  this   Lcom/zqlite/jvm/HelloJVM;</span><br><span class="line"></span><br><span class="line">  public static void main(java.lang.String...);</span><br><span class="line">    descriptor: ([Ljava/lang/String;)V</span><br><span class="line">    flags: ACC_PUBLIC, ACC_STATIC, ACC_VARARGS</span><br><span class="line">    Code:</span><br><span class="line">      stack=1, locals=1, args_size=1</span><br><span class="line">         0: invokestatic  #2                  // Method calc:()I</span><br><span class="line">         3: pop</span><br><span class="line">         4: return</span><br><span class="line">      LineNumberTable:</span><br><span class="line">        line 6: 0</span><br><span class="line">        line 7: 4</span><br><span class="line">      LocalVariableTable:</span><br><span class="line">        Start  Length  Slot  Name   Signature</span><br><span class="line">            0       5     0  args   [Ljava/lang/String;</span><br><span class="line"></span><br><span class="line">  public static int calc();</span><br><span class="line">    descriptor: ()I</span><br><span class="line">    flags: ACC_PUBLIC, ACC_STATIC</span><br><span class="line">    Code:</span><br><span class="line">      stack=2, locals=3, args_size=0</span><br><span class="line">         0: bipush        100</span><br><span class="line">         2: istore_0</span><br><span class="line">         3: sipush        200</span><br><span class="line">         6: istore_1</span><br><span class="line">         7: sipush        300</span><br><span class="line">        10: istore_2</span><br><span class="line">        11: iload_0</span><br><span class="line">        12: iload_1</span><br><span class="line">        13: iadd</span><br><span class="line">        14: iload_2</span><br><span class="line">        15: imul</span><br><span class="line">        16: ireturn</span><br><span class="line">      LineNumberTable:</span><br><span class="line">        line 10: 0</span><br><span class="line">        line 11: 3</span><br><span class="line">        line 12: 7</span><br><span class="line">        line 13: 11</span><br><span class="line">      LocalVariableTable:</span><br><span class="line">        Start  Length  Slot  Name   Signature</span><br><span class="line">            3      14     0     a   I</span><br><span class="line">            7      10     1     b   I</span><br><span class="line">           11       6     2     c   I</span><br><span class="line">&#125;</span><br><span class="line">SourceFile: &quot;HelloJVM.java&quot;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我们把注意点放在 calc 方法上，其中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">descriptor: ()I</span><br></pre></td></tr></table></figure>
+<p>表示这个方法的方法描述符是 ()I。了解 JNI 的小伙伴对方法描述符应该不会陌生，这里我不多介绍，想了解更多可以参考<a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/8/docs/technotes/guides/jni/spec/types.html">此处</a>。</p>
+<p>接着的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flags: ACC_PUBLIC, ACC_STATIC</span><br></pre></td></tr></table></figure>
+
+<p>表示这个是一个 public static 修饰的方法。</p>
+<p>然后 Code 部分是重点，其中 stack = 2 说明操作数栈的深度为 2 ，locals = 3 说明本地变量表有三个变量，args_size = 0 说明此方法没有参数。</p>
+<p>接下来先跳过下面的字节码，来看到 LocalVariableTable，这就是所谓的本地变量表了，表中有三行数据，分别是 a，b，c 和代码中定义的变量名一致。且他们的签名都是 I ，表示是 Int 型整数。</p>
+<p>接下来，我通过下面 7 幅图来讲解下解释执行这个方法的过程和此过程中局部变量表和操作数栈的变化情况。</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/6.webp" alt="image"></p>
+<p>上图是执行偏移地址为 0 的指令的情况。</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/7.webp" alt="image"></p>
+<p>上图是执行偏移地址为 2 的指令的情况。</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/8.webp" alt="image"></p>
+<p>上图是执行偏移地址为 11 的指令的情况。</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/9.webp" alt="image"></p>
+<p>上图是执行偏移地址为 12 的指令的情况。</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/10.webp" alt="image"></p>
+<p>上图是执行偏移地址为 13 的指令的情况。</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/11.webp" alt="image"></p>
+<p>上图是执行偏移地址为 14 的指令的情况。</p>
+<p><img src="https://blog-1256162814.cos.ap-nanjing.myqcloud.com/jvm/12.webp" alt="image"></p>
+<p>上图是执行偏移地址为 16 的指令的情况。</p>
+<p>方法的执行模型到这就结束了，请大家记住这仅仅是一种概念模型，虚拟机最终会对执行过程做一些优化来提升性能，实际的执行过程与概念模型差距可能会很大。之所以会有这种差距是因为虚拟机的执行引擎和即时编译器都会对输入的字节码进行优化。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这篇文章我主要带着大家简单了解了一下 JVM 的内层划分、对象的创建、字节码结构、字节码指令和类加载与解释执行这几部分的相关内容。由于篇幅有限，如 GC，编译优化和 JVM内部实现并发等内容没有介绍，如果大家感兴趣可以阅读《深入理解 Java 虚拟机-JVM 高级特性与最佳实践》。本文也是参考此书总结而来。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2017/11/17/GIF-and-LWZ/" rel="prev" title="GIF and LWZ">
+                  <i class="fa fa-angle-left"></i> GIF and LWZ
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/03/06/flutter-localizations/" rel="next" title="Flutter 中的国际化">
+                  Flutter 中的国际化 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">BLESS</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"scale":1,"hHeadPos":0.5,"vHeadPos":0.618,"jsonPath":"/live2dw/assets/assets/tororo.model.json"},"display":{"superSample":2,"width":150,"height":300,"position":"left","hOffset":0,"vOffset":-20},"mobile":{"show":true,"scale":0.5},"react":{"opacityDefault":0.7,"opacityOnHover":0.2},"archive_generator":{"per_page":0,"yearly":false,"monthly":false,"daily":false},"log":false});</script></body>
+</html>
